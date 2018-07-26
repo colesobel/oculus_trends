@@ -1,0 +1,8 @@
+requests
+flask
+pymysql
+psycopg2
+flask-cors
+bcrypt
+pycrypto
+pyjwt
