@@ -1,6 +1,6 @@
 angular.module('myApp.chartDirective', [])
 
-.directive('chart', ['$document', '$timeout', function($document, $timeout) {
+.directive('chart', ['$document', '$timeout', 'chartService', function($document, $timeout, chartService) {
   return {
     restrict: 'E',
     templateUrl: '/partials/chart.html',
@@ -11,10 +11,9 @@ angular.module('myApp.chartDirective', [])
 
     },
     link: function(scope, element, attrs) {
-
-
-
       //Resizable Code
+      let screenWidth = screen.width
+      let screenHeight = screen.height
       var child = element.children()
       var childWidth = scope.chartInfo.width
       var childHeight = scope.chartInfo.height
@@ -23,6 +22,8 @@ angular.module('myApp.chartDirective', [])
       var psy, psx, xdiff, ydiff
       let border = 10
       let borderMultiplier = border * 2
+      console.log(screen.width)
+      console.log(screen.height)
 
       child.css({
         width: `${scope.chartInfo.width + borderMultiplier}px`,
@@ -30,7 +31,7 @@ angular.module('myApp.chartDirective', [])
       })
 
       child.on('mousedown', function(event) {
-        console.log(event.target)
+        // console.log(event.target)
         if (!event.target.hasAttribute('chart-border')) {
           return
         }
@@ -60,7 +61,6 @@ angular.module('myApp.chartDirective', [])
         scope.$apply(function() {
           scope.chartInfo.width = width
           scope.chartInfo.height = height
-          console.log('changed')
         })
 
         psx = event.screenX
@@ -71,6 +71,7 @@ angular.module('myApp.chartDirective', [])
       function stopResize() {
         $document.off('mousemove', resize)
         $document.off('mouseup', stopResize)
+        chartService.saveChartPosition(scope.chartInfo.chartId, width, height, x, y)
       }
 
 
@@ -92,7 +93,6 @@ angular.module('myApp.chartDirective', [])
       });
 
       function drag(event) {
-
         y = event.screenY - startY;
         x = event.screenX - startX;
 
@@ -104,9 +104,11 @@ angular.module('myApp.chartDirective', [])
       }
 
       function stopDrag() {
-        $document.off('mousemove', drag);
-        $document.off('mouseup', stopDrag);
+        $document.off('mousemove', drag)
+        $document.off('mouseup', stopDrag)
+        chartService.saveChartPosition(scope.chartInfo.chartId, width, height, x, y)
       }
+
     }
   }
 }])

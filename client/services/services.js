@@ -7,3 +7,11 @@ angular.module('myApp.services', [])
     return `${matches[2]}-${matches[3]}-${matches[1]}`
   }
 })
+
+.service('chartService', ['$http', function($http) {
+  this.saveChartPosition = function(chartId, width, height, x, y) {
+    // This function saves the size and placement of charts
+    console.log(`${chartId}, ${width}, ${height}, ${x}, ${y}`)
+    return 'hi from chartservice'
+  }
+}])

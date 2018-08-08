@@ -39,8 +39,11 @@ angular.module('myApp.homeController', ['myApp.services'])
     }
   this.width = 800
   this.height = 500
+  this.chartType = 'column2d'
 
   this.theInfo = {
+    chartId: 1,
+    chartType: this.chartType,
     data: this.DataSource,
     width: this.width,
     height: this.height
