@@ -4,7 +4,9 @@ import jwt
 import bcrypt
 import Crypto
 import Crypto.Random
-from flask import request, Response
+from flask import request, Response, abort
+
+from python.api.models import http_responses
 
 Encryption = namedtuple('Encryption', ['cipher_text', 'key', 'iv'])
 
@@ -28,12 +30,15 @@ def _unpad(s):
 
 def hash_pw(password):
     pw = str(password).encode('utf-8')
-    return bcrypt.hashpw(pw, bcrypt.gensalt(rounds=12))
+    return bcrypt.hashpw(pw, bcrypt.gensalt()).decode('utf-8')
 
 
 def check_pw(password, hashed):
-    pw = str(password).encode('utf-8')
-    return bcrypt.checkpw(pw, hashed)
+    password = bytes(str(password).encode('utf-8'))
+    hashed = bytes(hashed.encode('utf-8'))
+    result = bcrypt.checkpw(password, hashed)
+    print(result)
+    return result
 
 
 def aes_encrypt(raw):
@@ -50,7 +55,7 @@ def aes_decrypt(cipher_text, key, iv):
 
 
 def decode_jwt(token=None):
-    token = token or get_jwt()
+    token = token or request.cookies.get('oculus_session')
     if token:
         try:
             decoded = jwt.decode(token, jwt_secret, algorithms=jwt_algo)
@@ -60,26 +65,17 @@ def decode_jwt(token=None):
             return None
 
 
-def create_jwt(data):
+def encode_jwt(data):
     encoded = jwt.encode(data, key=jwt_secret, algorithm=jwt_algo)
-    print(encoded)
     return encoded
-
-
-def get_jwt():
-    try:
-        token = request.headers.get('Authorization').split(' ')[1]
-        if token:
-            return token
-    except:
-        return None
 
 
 def authenticate(func):
     def wrapped(*args, **kwargs):
         auth_info = decode_jwt()
         if not auth_info:
-            return Response(json.dumps({'error': 'Unauthenticated'}), status=403, mimetype='application/json')
+            # return func(*args, **kwargs)  #TODO TAKE THIS OUT
+            return http_responses.unauthenticated()
         else:
             return func(*args, **kwargs)
 
@@ -94,8 +90,3 @@ def authenticate(func):
 # print(encrypted)
 # raw = aes_decrypt(things.cipher_text, things.key, things.iv)
 # print(raw)
-
-
-
-encoded = create_jwt({'name': 'cole', 'location': 'sd'})
-decoded = decode_jwt(encoded)

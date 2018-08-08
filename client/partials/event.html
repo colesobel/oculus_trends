@@ -1,0 +1,52 @@
+
+<div class="event-holder">
+  <div class="date">
+    <h4 class="h4">{{eventInfo.date}}</h4>
+    <img data-toggle="modal" data-target="#{{eventInfo.event_id}}" class="venue-img img-circle" src="/images/o.jpeg" alt="{{eventInfo.venue_name}}" />
+  </div>
+  <div class="content">
+    <p class="display-heading common artist">{{eventInfo.artist}} | {{eventInfo.venue_name}}</p>
+    <p class="display-heading common hotel">{{eventInfo.hotel_name}}</p>
+  </div>
+  <div class="right">
+    <a target="_blank" ng-href="https://www.yelp.com/biz/{{eventInfo.yelp_id}}"><img class="yelp-logo" src="/images/yelp_logo.png" alt="Yelp Logo"></a>
+    <img class="yelp-stars" ng-src="/images/{{eventInfo.venue_rating | ratingImage}}" alt="Yelp Stars">
+    <div class="clear"></div>
+  
+      <span class="reg-text">Based on {{eventInfo.review_count | number}} Reviews</span>
+    <p class="display-heading"></p>
+    <div class="display-heading common right-align">
+       <a target="_blank" ng-href="{{eventInfo.ticket_link}}"><button type="button" class="btn btn-success">Get Tickets</button></a>
+      <br>
+      <p class="reg-text tickets">({{eventInfo.min_price | currency}} - {{eventInfo.max_price | currency}})</p>
+    </div>
+    
+    <p class="display-heading common right-align">{{eventInfo.time}}</p>
+    
+  </div>
+  <div class="clear"></div>
+  <div class="bottom">
+      <p class="display-heading common right-align">{{eventInfo.venue_rating}}/5 | 
+        <span class="reg-text right-align">({{eventInfo.review_count | number}} reviews)</span>
+      </p>
+      <p class="display-heading"></p>
+      <p class="display-heading common right-align">{{eventInfo.min_price | currency}} - {{eventInfo.max_price | currency}}</p>
+      <p class="display-heading common right-align">{{eventInfo.time}}</p>
+  </div>
+  
+  <!-- Modal -->
+  <div class="modal fade" id="{{eventInfo.event_id}}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="myModalLabel">{{eventInfo.venue_name}}</h4>
+        </div>
+        <div class="modal-body">
+            <img class="img-modal" src="/images/o.jpeg" alt="{{eventInfo.venue_name}}" />
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+

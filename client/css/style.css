@@ -1,0 +1,283 @@
+
+.everything {
+  background-color: #d9d9d9;
+  min-height: 100vh;
+}
+.dashboard {
+  position: relative;
+}
+.draggable {
+  position: fixed;
+  top: 45px;
+  left: 300px;
+  background-color: green;
+}
+
+.cursor-extender {
+  cursor: nwse-resize;
+  border: 2px solid black;
+}
+
+.cursor-move {
+  cursor: move;
+  border: 5px solid rgba(0,0,0, 0.0);
+}
+
+.chart-border {
+  border: 10px solid rgba(0,0,0, 0.0);
+  cursor: nwse-resize;
+}
+
+.test {
+  width: 100px;
+  border: 2px solid blue;
+  height: 100px;
+  background-color: green;
+}
+
+.box {
+  width: 200px;
+  height: 200px;
+  line-height: 200px;
+  color: white;
+  text-align: center;
+  vertical-align: middle;
+  background: -webkit-linear-gradient(red, #ccc); /* For Safari 5.1 to 6.0 */
+  background: -o-linear-gradient(red, #ccc); /* For Opera 11.1 to 12.0 */
+  background: -moz-linear-gradient(red, #ccc); /* For Firefox 3.6 to 15 */
+  background: linear-gradient(red, #ccc); /* Standard syntax */
+}
+
+.custom-nav {
+  height: 50px;
+  background-color: white;
+  border-radius: 5px;
+  display: flex;
+  flex-direction: row;
+}
+
+.app-name {
+  font-size: 2em;
+  font-size: 2vw;
+  margin-right: 3%;
+}
+
+.custom-tab {
+  height: 45px;
+  border-radius: 5px;
+  background-color: #4C4E50;
+  float: left;
+  width: 10%;
+  color: white;
+  font-weight: bold;
+  margin: 2px;
+  text-align: center;
+  cursor: pointer;
+}
+
+.custom-tab-clicked {
+  background-color: #0085F1;
+  box-shadow: 0px 0px 3px 3px grey;
+}
+
+.custom-tab:hover {
+  background-color: #0085F1;
+}
+
+.tab-icon {
+  height: 50%;
+  width: auto;
+}
+
+.toolbar {
+  min-height: 75px;
+  background-color: rgba(0,0,0, 0.4);
+  border-radius: 5px;
+}
+
+/* input[type=text] {
+  background-color: white;
+  color: black;
+} */
+
+.date-holder {
+  float: left;
+  border: 1px solid pink;
+}
+
+.go {
+  background-color: #0083ED;
+  font-weight: bold;
+  margin: 1%;
+}
+
+.datepick-title {
+  text-align: center;
+  color: white;
+  font-weight: bold;
+  display: block;
+}
+
+.date-picker-custom {
+  border-radius: 2px;
+  margin-left: 1%;
+}
+
+.date-picker {
+  float: left;
+  /* background-color: black; */
+  border-radius: 5px;
+  margin-left: 100px;
+  color: blue !important;
+  color: white;
+  opacity: 1 !important;
+}
+
+.float-left {
+  float: left;
+}
+
+.event-holder {
+  border: 1px solid black;
+  border-radius: 5px;
+  background-color: #f2f2f2;
+  margin: 10px 0px;
+  box-shadow: 4px 4px 2px grey;
+}
+
+.venue {
+
+}
+
+.filter-button {
+  /* border: 10px; */
+  /* width: 100% !important; */
+}
+
+.common {
+  /* color: #6600cc; */
+  font-size: 1.3em;
+}
+
+.date {
+  width: 20%;
+  float: left;
+  margin-left: 5px;
+}
+
+.content {
+  float: left;
+  height: 100%;
+}
+
+.right {
+  float: right;
+  margin-right: 0px;
+}
+
+.artist {
+  font-size: 2em;
+  font-size: 2vw;
+  padding-bottom: 10px;
+  border-bottom: 1px solid black;
+}
+
+.clear {
+  clear: both;
+}
+
+
+.hotel {
+  font-size: 1.3em
+}
+
+.center {
+  margin: auto;
+  width: 60%;
+  min-width: 300px;
+}
+
+.venue-img {
+  display: block;
+  width: 50%;
+  height: auto;
+  cursor: pointer;
+}
+
+.yelp-logo {
+  margin: 0px;
+  float: right;
+  width: 75px;
+  cursor: pointer;
+}
+
+.yelp-stars {
+  width: 100px;
+  height: auto;
+  float: right;
+  margin-top: 18px;
+}
+
+.img-modal {
+  width: 50%;
+  height: auto;
+  margin: 0 auto;
+}
+
+.reg-text {
+  font-size: 14px;
+}
+
+.right-align {
+  text-align: right;
+  margin-right: 5px;
+}
+
+.move-right {
+   margin-right: 5px;
+}
+
+.bottom {
+  display: none;
+}
+
+@media only screen and (max-width: 1000px) {
+  .center {
+      width: 70%;
+      float: left;
+  }
+
+  .artist {
+    font-size: 2em;
+    font-size: 2.5vw;
+  }
+}
+
+@media only screen and (max-width: 800px) {
+  .center {
+      width: 100%;
+  }
+
+  .artist {
+    font-size: 2em;
+    font-size: 3.5vw;
+  }
+}
+
+@media only screen and (max-width: 500px) {
+  .bottom {
+    display: flex;
+    flex-direction: row;
+    align-content: space-between;
+    border-top: 1px solid black;
+  }
+  .right {
+    display: none;
+  }
+
+  .artist {
+    font-size: 2em;
+    font-size: 7vw;
+  }
+
+}
