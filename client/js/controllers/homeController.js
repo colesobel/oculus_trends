@@ -37,16 +37,19 @@ angular.module('myApp.homeController', ['myApp.services'])
             "value": "30"
         }]
     }
-  this.width = 800
-  this.height = 500
+  this.width = 0.5
+  this.height = 0.5
   this.chartType = 'column2d'
+  this.homevar = 'hi'
 
   this.theInfo = {
     chartId: 1,
     chartType: this.chartType,
     data: this.DataSource,
     width: this.width,
-    height: this.height
+    height: this.height,
+    x: 0.5,
+    y: 0.5
   }
 
 }])

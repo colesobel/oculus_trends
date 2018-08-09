@@ -1,9 +1,9 @@
 <div chart-border class="chart-border">
-  <div fusioncharts
-    width="{{chartInfo.width}}"
-    height="{{chartInfo.height}}"
+  <div ng-cloak fusioncharts
+    width="{{renderedWidth}}"
+    height="{{renderedHeight}}"
     type="{{chartInfo.chartType}}"
     dataSource="{{chartInfo.data}}"
-    style="width:{{chartInfo.width}}px; height:{{chartInfo.height}}px; cursor:move!important;">
+    style="width:{{renderedWidth}}px; height:{{renderedHeight}}px; cursor:move!important;">
   </div>
 </div>
