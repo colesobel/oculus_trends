@@ -1,6 +1,6 @@
 import json
 from flask import Blueprint, request, abort, Response
-from python.api.models import utils, http_responses, auth, login as lg
+from python.api.models import utils, http_responses, auth, account, login as lg
 
 
 login_controller = Blueprint('login_controller', __name__)
@@ -19,3 +19,16 @@ def login():
         return resp
     else:
         return http_responses.unauthenticated()
+
+
+@login_controller.route('/signup', methods=['POST'])
+def signup():
+    data = json.loads(request.data)
+    account_data = {'name': data['accountName']}
+    acc = utils.map_to_class(account_data, account.Account)
+    account_id = acc.create()
+    
+
+    resp = Response(json.dumps({'mess': 'hi'}))
+    return resp
+

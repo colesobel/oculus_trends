@@ -1,6 +1,6 @@
-angular.module('myApp.homeController', ['myApp.services'])
+angular.module('myApp.dashboardController', ['myApp.services'])
 
-.controller('homeController', ['$http', '$state', '$rootScope', 'getDate', function($http, $state, $rootScope, getDate) {
+.controller('dashboardController', ['$http', '$state', '$rootScope', 'getDate', function($http, $state, $rootScope, getDate) {
 
   this.DataSource = {
         "chart": {
@@ -40,7 +40,6 @@ angular.module('myApp.homeController', ['myApp.services'])
   this.width = 0.5
   this.height = 0.5
   this.chartType = 'column2d'
-  this.homevar = 'hi'
 
   this.theInfo = {
     chartId: 1,
@@ -48,8 +47,8 @@ angular.module('myApp.homeController', ['myApp.services'])
     data: this.DataSource,
     width: this.width,
     height: this.height,
-    x: 0.5,
-    y: 0.5
+    x: 0.1,
+    y: 0.1
   }
 
 }])

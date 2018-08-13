@@ -1,0 +1,95 @@
+<div class="form-container">
+  <button type="button"
+  class="btn btn-sm"
+  ng-class="{'btn-primary': login.formMode=='signup', 'btn-secondary': login.formMode=='login'}"
+  ng-click="login.formMode='signup'">
+  Sign Up</button>
+
+<button type="button"
+  class="btn btn-sm"
+  ng-class="{'btn-primary': login.formMode=='login', 'btn-secondary': login.formMode=='signup'}"
+  ng-click="login.formMode='login'">
+  Log In</button>
+
+  <form ng-if="login.formMode =='signup'">
+
+    <div class="form-group">
+      <label for="email">Company Name</label>
+      <input type="text"
+      class="form-control"
+      id="accountName"
+      placeholder="Enter email"
+      ng-model=login.signupForm.accountName>
+    </div>
+
+    <div class="form-group">
+      <label for="email">First Name</label>
+      <input type="text"
+      class="form-control"
+      id="firstName"
+      placeholder="Enter email"
+      ng-model=login.signupForm.firstName>
+    </div>
+
+    <div class="form-group">
+      <label for="email">Last Name</label>
+      <input type="text"
+      class="form-control"
+      id="lastName"
+      placeholder="Enter email"
+      ng-model=login.signupForm.lastName>
+    </div>
+
+    <div class="form-group">
+      <label for="email">Email address</label>
+      <input type="email"
+      class="form-control"
+      id="emailSignup"
+      placeholder="Enter email"
+      ng-model=login.signupForm.email>
+    </div>
+    <div class="form-group">
+      <label for="password">Password</label>
+      <input type="password"
+      class="form-control"
+      id="passwordSignup"
+      placeholder="Password"
+      ng-model=login.signupForm.password>
+    </div>
+    <div class="form-group">
+      <label for="confirmPassword">Confirm Password</label>
+      <input type="password"
+      class="form-control"
+      id="confirmPasswordSignup"
+      placeholder="Confirm Password"
+      ng-model="login.signupForm.passwordConfirm">
+    </div>
+    <button type="submit"
+    class="btn btn-primary"
+    ng-click="login.submitSignup()">Sign Up</button>
+  </form>
+
+  <form ng-if="login.formMode =='login'">
+    <div class="form-group">
+      <label for="email">Email address</label>
+      <input type="email"
+      class="form-control"
+      id="emailLogin"
+      aria-describedby="emailHelp"
+      placeholder="Enter email"
+      ng-model="login.loginForm.email">
+    </div>
+    <div class="form-group">
+      <label for="password">Password</label>
+      <input type="password"
+      class="form-control"
+      id="passwordLogin"
+      placeholder="Password"
+      ng-model="login.loginForm.password">
+    </div>
+    <button
+    type="submit"
+    class="btn btn-primary"
+    ng-click="login.submitLogin()">Log In</button>
+  </form>
+</div>

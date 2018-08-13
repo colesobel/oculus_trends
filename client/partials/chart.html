@@ -1,9 +1,14 @@
-<div chart-border class="chart-border">
-  <div ng-cloak fusioncharts
+<img ng-src="{{refreshIcon}}"
+  class="refresh"
+  ng-mouseover="refreshIcon='/images/refresh_hover.png'"
+  ng-mouseleave="refreshIcon='/images/refresh.png'"/>
+
+  <div
+    ng-cloak fusioncharts
     width="{{renderedWidth}}"
     height="{{renderedHeight}}"
     type="{{chartInfo.chartType}}"
     dataSource="{{chartInfo.data}}"
-    style="width:{{renderedWidth}}px; height:{{renderedHeight}}px; cursor:move!important;">
+    style="width:{{renderedWidth}}px; height:{{renderedHeight}}px; cursor:move !important;">
   </div>
-</div>
+  <img src="/images/resize.png" class="resize"/>

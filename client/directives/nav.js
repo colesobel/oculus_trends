@@ -6,8 +6,6 @@ angular.module('myApp.navDirective', [])
     templateUrl: '/partials/navbar.html',
     controller: function($scope, $http) {
       let nav = this
-      $("#datepicker").datepicker();
-      $("#datepicker2").datepicker();
       nav.search = function() {
         console.log('search pushed!')
       }

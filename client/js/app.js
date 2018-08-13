@@ -2,8 +2,8 @@ var app = angular.module('myApp', [
   'ui.router',
   'ngMaterial',
   // 'chart.js',
-  'myApp.homeController',
-  'myApp.testController',
+  'myApp.dashboardController',
+  'myApp.loginController',
   'myApp.navDirective',
   'myApp.eventDirective',
   'myApp.draggableDirective',
@@ -19,17 +19,17 @@ var app = angular.module('myApp', [
 app.config(['$stateProvider', '$urlRouterProvider', '$locationProvider', function($stateProvider, $urlRouterProvider, $locationProvider) {
   $urlRouterProvider.otherwise('/')
   $stateProvider
-    .state('home', {
+    .state('dash', {
       url: '/',
-      templateUrl: '/partials/home.html',
-      controller: 'homeController',
-      controllerAs: 'home'
+      templateUrl: '/partials/dashboard.html',
+      controller: 'dashboardController',
+      controllerAs: 'dash'
     })
-    .state('test', {
-      url: '/test',
-      templateUrl: '/partials/test.html',
-      controller: 'testController',
-      controllerAs: 'test'
+    .state('login', {
+      url: '/login',
+      templateUrl: '/partials/login.html',
+      controller: 'loginController',
+      controllerAs: 'login'
     })
     // $locationProvider.html5Mode(true);
 }])

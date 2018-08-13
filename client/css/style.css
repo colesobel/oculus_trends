@@ -5,7 +5,66 @@
 }
 .dashboard {
   position: relative;
+  min-width: 100%;
+  min-height: 100vh;
 }
+
+.chart-border {
+  border: 10px solid rgba(0,0,0, 0.0);
+  cursor: nwse-resize;
+}
+
+.navbar-custom {
+  height: 75px;
+  width: 100%;
+  border-bottom: 1px solid #1aff1a;
+  position: fixed;
+  top: 0;
+  z-index: 1;
+  background-color: #36A1F6;
+}
+
+.nav-space {
+  height: 75px;
+  width: 100%;
+}
+
+.refresh {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 20px!important;
+  height: 20px!important;
+  z-index: 1;
+  cursor: pointer!important;
+}
+
+.resize {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 20px!important;
+  height: 20px!important;
+  z-index: 1;
+  cursor: nwse-resize;
+}
+
+
+
+.form-container {
+  width: 50vw;
+  min-width: 300px;
+}
+
+
+
+
+
+
+
+/*I dont think any of the css below is being used*/
+
+
 .draggable {
   position: fixed;
   top: 45px;
@@ -23,10 +82,7 @@
   border: 5px solid rgba(0,0,0, 0.0);
 }
 
-.chart-border {
-  border: 10px solid rgba(0,0,0, 0.0);
-  cursor: nwse-resize;
-}
+
 
 .test {
   width: 100px;

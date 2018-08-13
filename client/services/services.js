@@ -15,3 +15,8 @@ angular.module('myApp.services', [])
     return 'hi from chartservice'
   }
 }])
+
+
+.service('globalVars', ['$http', function() {
+  this.apiUrl = 'http://localhost:5000/'
+}])

@@ -10,33 +10,22 @@ angular.module('myApp.chartDirective', [])
     controller: function($scope, $http) {
       $scope.renderedWidth = $scope.chartInfo.width * window.outerWidth
       $scope.renderedHeight = $scope.chartInfo.height * window.outerHeight
+      $scope.refreshIcon = '/images/refresh.png'
 
     },
     link: function(scope, element, attrs) {
       let screenWidth = window.outerWidth
       let screenHeight = window.outerHeight
-      let parent = element.parent()
-
-
 
       //Resizable Code
-      let border = element.children()
+      let resizeIcon = element.children()  // Will exit if not resize icon
       var width = scope.renderedWidth
       var height = scope.renderedHeight
       var psy, psx, xdiff, ydiff
-      let borderSize = 10
-      let borderMultiplier = borderSize * 2
-      // console.log(screen.width)
-      // console.log(screen.height)
 
-      border.css({
-        width: `${scope.renderedWidth + borderMultiplier}px`,
-        height: `${scope.renderedHeigh + borderMultiplier}px`
-      })
-
-      border.on('mousedown', function(event) {
-        // console.log(event.target)
-        if (!event.target.hasAttribute('chart-border')) {
+      resizeIcon.on('mousedown', function(event) {
+        console.log()
+        if (! event.target.classList.contains('resize')) {
           return
         }
         event.preventDefault()
@@ -52,28 +41,13 @@ angular.module('myApp.chartDirective', [])
 
         width = width + xdiff
         height = height + ydiff
-        // console.log(`width: ${width}`)
-        // console.log(`height: ${height}`)
-
-        element.css({
-          width: `${width + borderMultiplier}px`,
-          height: `${height + borderMultiplier}px`
-        })
 
         scope.$apply(function() {
           scope.renderedWidth = width
           scope.renderedHeight = height
-          scope.chartInfo.width = (width / window.outerWidth).toFixed(2)
-          scope.chartInfo.height = (height / window.outerHeight).toFixed(2)
-          console.log(scope.chartInfo.width)
-          console.log(scope.chartInfo.height)
+          scope.chartInfo.width = (width / screenWidth).toFixed(3)
+          scope.chartInfo.height = (height / screenHeight).toFixed(3)
         })
-
-        border.css({
-          width: `${width + borderMultiplier}px`,
-          height: `${width + borderMultiplier}px`
-        })
-
 
         psx = event.screenX
         psy = event.screenY
@@ -83,24 +57,21 @@ angular.module('myApp.chartDirective', [])
       function stopResize() {
         $document.off('mousemove', resize)
         $document.off('mouseup', stopResize)
-        chartService.saveChartPosition(scope.chartInfo.chartId, scope.chartInfo.width, scope.chartInfo.height, x, y)
+        chartService.saveChartPosition(scope.chartInfo.chartId, scope.chartInfo.width, scope.chartInfo.height, scope.chartInfo.x, scope.chartInfo.y)
       }
+
 
 
       //Draggable Code
       var startX = 0, startY = 0
-      var x = scope.chartInfo.x * window.outerWidth
-      var y = scope.chartInfo.y * window.outerHeight
+      var x = scope.chartInfo.x * screenWidth
+      var y = scope.chartInfo.y * screenHeight
 
-      parent.css({
-        position: 'relative',
+      element.css({
+        position: 'absolute',
         top: y + 'px',
         left:  x + 'px',
       })
-
-      console.log(`start x ${x}`)
-      console.log(`start y ${y}`)
-
 
       element.on('mousedown', function(event) {
 
@@ -109,34 +80,38 @@ angular.module('myApp.chartDirective', [])
         }
 
         event.preventDefault()
-        console.log(parent)
-        console.log(`screenx ${event.screenX}`)
-        console.log(`screeny ${event.screenY}`)
+        psx = event.screenX
+        psy = event.screenY
 
-        startX = event.screenX - x;
-        startY = event.screenY - y;
         $document.on('mousemove', drag);
         $document.on('mouseup', stopDrag);
       });
 
       function drag(event) {
-        y = event.screenY - startY
-        x = event.screenX - startX
+        xdiff = event.screenX - psx
+        ydiff = event.screenY - psy
 
-        console.log(`new x ${x}`)
-        console.log(`new y ${y}`)
+        x = Math.max((x + xdiff), 0)
+        y = Math.max((y + ydiff), 0)
 
-        parent.css({
-          position: 'relative',
+
+        element.css({
           top: y + 'px',
           left:  x + 'px',
         })
+
+        psx = event.screenX
+        psy = event.screenY
+
+          scope.chartInfo.x = (x / screenWidth).toFixed(3)
+          scope.chartInfo.y = (y / screenHeight).toFixed(3)
+
       }
 
       function stopDrag() {
         $document.off('mousemove', drag)
         $document.off('mouseup', stopDrag)
-        chartService.saveChartPosition(scope.chartInfo.chartId, scope.chartInfo.width, scope.chartInfo.height, x, y)
+        chartService.saveChartPosition(scope.chartInfo.chartId, scope.chartInfo.width, scope.chartInfo.height, scope.chartInfo.x, scope.chartInfo.y)
       }
 
     }
