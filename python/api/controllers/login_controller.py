@@ -1,6 +1,7 @@
 import json
-from flask import Blueprint, request, abort, Response
+from flask import Blueprint, request, abort, Response, make_response
 from python.api.models import utils, http_responses, auth, account, login as lg
+from python.api.models.forms import account_form
 
 
 login_controller = Blueprint('login_controller', __name__)
@@ -24,11 +25,23 @@ def login():
 @login_controller.route('/signup', methods=['POST'])
 def signup():
     data = json.loads(request.data)
-    account_data = {'name': data['accountName']}
-    acc = utils.map_to_class(account_data, account.Account)
-    account_id = acc.create()
-    
+    account_data = account_form.post(**data)
+    jwt = auth.encode_jwt(account_data)
 
-    resp = Response(json.dumps({'mess': 'hi'}))
+    resp = make_response()
+    resp.data = json.dumps(account_data)
+    resp.mimetype = 'application/json'
+    # resp = Response(response=json.dumps(account_data), mimetype='application/json')
+    resp.status_code = 201
+    resp.headers['jwt'] = jwt
+    resp.headers['Access-Control-Expose-Headers'] = 'jwt'
     return resp
 
+#
+# @login_controller.route('/testheader', methods=['GET'])
+# def head():
+#     resp = Response()
+#     resp.status_code = 201
+#     resp.headers['test'] = 'hi'
+#     print('headers added')
+#     return resp

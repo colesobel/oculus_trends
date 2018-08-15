@@ -13,7 +13,8 @@ var app = angular.module('myApp', [
   'myApp.chartDirective',
   'myApp.services',
   'myApp.filters',
-  '720kb.datepicker'
+  '720kb.datepicker',
+  'ngCookies'
 ])
 
 app.config(['$stateProvider', '$urlRouterProvider', '$locationProvider', function($stateProvider, $urlRouterProvider, $locationProvider) {
