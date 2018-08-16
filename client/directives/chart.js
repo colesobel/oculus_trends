@@ -1,4 +1,4 @@
-angular.module('myApp.chartDirective', [])
+angular.module('app.chartDirective', [])
 
 .directive('chart', ['$document', '$timeout', 'chartService', function($document, $timeout, chartService) {
   return {

@@ -1,4 +1,4 @@
-angular.module('myApp.navDirective', [])
+angular.module('app.navDirective', [])
 
 .directive('navbar', [function() {
   return {

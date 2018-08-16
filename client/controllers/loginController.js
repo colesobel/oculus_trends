@@ -9,12 +9,10 @@ angular.module('app.loginController', [])
     console.log('signing up')
     console.log(login.signupForm)
     $http.post(globalVars.apiUrl + 'signup', login.signupForm).then(account => {
-      console.log('success!')
       console.log(account.data)
       jwt = account.headers('jwt')
       auth.setJwt(jwt)
       $state.go('settings')
-
 
     },
     error => {
@@ -26,11 +24,13 @@ angular.module('app.loginController', [])
   this.submitLogin = () => {
     console.log('submitting login')
     console.log(login.loginForm)
-    console.log(globalVars.apiUrl)
 
     $http.post(globalVars.apiUrl + 'login', login.loginForm).then(user => {
       console.log('the request succeeded')
       console.log(user)
+      jwt = user.headers('jwt')
+      auth.setJwt(jwt)
+      $state.go('dash')
       },
       error => {
         console.log('The request failed')

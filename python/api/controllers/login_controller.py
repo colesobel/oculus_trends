@@ -31,17 +31,15 @@ def signup():
     resp = make_response()
     resp.data = json.dumps(account_data)
     resp.mimetype = 'application/json'
-    # resp = Response(response=json.dumps(account_data), mimetype='application/json')
     resp.status_code = 201
     resp.headers['jwt'] = jwt
     resp.headers['Access-Control-Expose-Headers'] = 'jwt'
     return resp
 
-#
-# @login_controller.route('/testheader', methods=['GET'])
-# def head():
-#     resp = Response()
-#     resp.status_code = 201
-#     resp.headers['test'] = 'hi'
-#     print('headers added')
-#     return resp
+
+
+@login_controller.route('/testing', methods=['GET'])
+def testit():
+    resp = make_response()
+    resp.status_code = 403
+    return resp

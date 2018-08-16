@@ -1,4 +1,4 @@
-angular.module('myApp.filters', [])
+angular.module('app.filters', [])
 
 .filter('percentage', function () {
   return input => {
