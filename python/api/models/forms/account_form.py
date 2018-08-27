@@ -1,4 +1,4 @@
-from python.api.models import account, user, auth
+from api.models import account, user, auth
 
 # class AccountForm:
 #     def __init__(self, accountName, firstName, lastName, email, password):
@@ -35,5 +35,4 @@ def post(accountName, firstName, lastName, email, password):
         'email': email
     }
     return account_data
-
 

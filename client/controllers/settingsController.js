@@ -1,15 +1,35 @@
 angular.module('app.settingsController', [])
 
 
-.controller('settingsController', ['$http', 'auth', 'globalVars', function($http, auth, globalVars) {
-  console.log('hi from settings controller')
-  jwt = auth.getJwt()
-  console.log('jwt: ')
-  console.log(jwt)
-  console.log('doing bad things...')
-  $http.get(globalVars.apiUrl + 'testing').then(resp => {
-    console.log('good resp')
-  }, error => {
-    console.log('bad resp')
-  })
+.controller('settingsController', ['$state', '$http', '$document', 'globalVars', '$timeout', function($state, $http, $document, globalVars, $timeout) {
+  // $http.get(globalVars.apiUrl + 'testing').then(resp => {
+  //   console.log('good resp')
+  //   console.log(resp)
+  // }, error => {
+  //   console.log('bad resp')
+  // })
+  let settings = this
+
+  settings.submitDatabaseConnection = () => {
+    console.log(settings.dbInfo)
+    $http.post(globalVars.apiUrl + 'db_conn', settings.dbInfo).then(response => {
+      if (response.status == 403) {
+        console.log('dismissing modal')
+        settings.dismissModal()
+        $timeout(() => {
+          $state.go('login')
+        }, 500)
+
+      }
+
+      console.log(response.data)
+
+      settings.dismissModal()
+    }, error => {
+      console.log(error)
+      console.log('error')
+      settings.dismissModal()
+    })
+
+  }
 }])

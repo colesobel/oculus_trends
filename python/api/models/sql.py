@@ -1,4 +1,4 @@
-from python.api.models import database as db
+from api.models import database as db
 
 
 def single_insert(table, columns, values, timestamps=None, uuid=True):

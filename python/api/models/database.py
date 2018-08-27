@@ -60,3 +60,17 @@ def sql_fetch_one(query, args, database=DATABASE):
         return result
     finally:
         connection.close()
+
+
+def client_mysql_fetch_all(connection, query, args):
+    try:
+        with connection.cursor() as cursor:
+            cursor.execute(query, args)
+            result = cursor.fetchall()
+    except Exception as e:
+        raise e
+    else:
+        return result
+    finally:
+        connection.close()
+

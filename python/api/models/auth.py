@@ -6,7 +6,7 @@ import Crypto
 import Crypto.Random
 from flask import request, Response, abort
 
-from python.api.models import http_responses
+from api.models import http_responses
 
 Encryption = namedtuple('Encryption', ['cipher_text', 'key', 'iv'])
 
@@ -55,11 +55,10 @@ def aes_decrypt(cipher_text, key, iv):
 
 
 def decode_jwt(token=None):
-    token = token or request.cookies.get('oculus_session')
+    token = token or request.headers.get('jwt')
     if token:
         try:
             decoded = jwt.decode(token, jwt_secret, algorithms=jwt_algo)
-            print(decoded)
             return decoded
         except:
             return None
@@ -73,13 +72,20 @@ def encode_jwt(data):
 def authenticate(func):
     def wrapped(*args, **kwargs):
         auth_info = decode_jwt()
+        print('authenticating!!')
+        print(auth_info)
         if not auth_info:
-            # return func(*args, **kwargs)  #TODO TAKE THIS OUT
             return http_responses.unauthenticated()
         else:
             return func(*args, **kwargs)
 
     return wrapped
+
+
+def get_account_id_from_jwt(request):
+    jwt = request.headers.get('jwt')
+    decoded_jwt = decode_jwt(jwt)
+    return decoded_jwt['account_id']
 
 
 

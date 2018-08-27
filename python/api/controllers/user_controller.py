@@ -1,6 +1,6 @@
 import json
 from flask import Blueprint, request, Response
-from python.api.models import utils, auth, user
+from api.models import utils, auth, user
 
 
 user_controller = Blueprint('user_controller', __name__)

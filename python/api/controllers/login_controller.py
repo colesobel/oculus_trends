@@ -1,7 +1,7 @@
 import json
 from flask import Blueprint, request, abort, Response, make_response
-from python.api.models import utils, http_responses, auth, account, login as lg
-from python.api.models.forms import account_form
+from api.models import utils, http_responses, auth, account, user, login as lg
+from api.models.forms import account_form
 
 
 login_controller = Blueprint('login_controller', __name__)
@@ -12,11 +12,12 @@ def login():
     data = json.loads(request.data)
     authenticated_user = lg.login_user(**data)
     if authenticated_user:
-        user_data = utils.get_fields_from_dict(authenticated_user, 'id', 'email', 'first_name', 'last_name')
+        user_data = utils.get_fields_from_dict(authenticated_user, 'user_id', 'email', 'account_id')
         jwt = auth.encode_jwt(data)
 
         resp = Response(json.dumps(user_data))
-        resp.set_cookie('oculus_session', jwt)
+        resp.headers['jwt'] = jwt
+        resp.headers['Access-Control-Expose-Headers'] = 'jwt'
         return resp
     else:
         return http_responses.unauthenticated()
@@ -37,9 +38,13 @@ def signup():
     return resp
 
 
-
-@login_controller.route('/testing', methods=['GET'])
-def testit():
-    resp = make_response()
-    resp.status_code = 403
-    return resp
+@login_controller.route('/startup', methods=['GET'])
+def startup():
+    try:
+        jwt = request.headers['jwt']
+        email = auth.decode_jwt(jwt)['email']
+        info = user.User.get_startup_info(email)
+    except:
+        return http_responses.not_found()
+    else:
+        return Response(json.dumps(info))

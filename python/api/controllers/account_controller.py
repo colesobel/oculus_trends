@@ -1,6 +1,6 @@
 import json
 from flask import Blueprint, request, abort, Response
-from python.api.models import utils, account, auth
+from api.models import utils, account, auth
 
 
 
@@ -22,6 +22,7 @@ account_controller = Blueprint('account_controller', __name__)
 #     resp = Response(json.dumps(response), status=200, mimetype='application/json')
 #
 #     return resp
+
 
 
 

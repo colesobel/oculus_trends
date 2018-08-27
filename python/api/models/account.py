@@ -1,5 +1,5 @@
-from python.api.models.base_model import BaseModel
-from python.api.models.sql import single_insert
+from api.models.base_model import BaseModel
+from api.models.sql import single_insert
 
 
 class Account(BaseModel):

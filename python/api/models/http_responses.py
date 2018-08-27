@@ -9,3 +9,13 @@ def unauthenticated():
     })
     return Response(res_json, status=403, mimetype='application/json')
 
+
+def not_found():
+    res_json = json.dumps({
+        'Success': False,
+        'Error': 'Not Found'
+    })
+    resp = Response(res_json)
+    resp.status_code = 404
+    return resp
+

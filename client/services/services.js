@@ -23,6 +23,7 @@ angular.module('app.services', [])
 
 
 .service('auth', ['$cookies', function($cookies) {
+  let authContext = this
   this.getJwt = () => {
     return $cookies.get('jwt')
   }
@@ -30,9 +31,18 @@ angular.module('app.services', [])
   this.setJwt = (jwt) => {
     $cookies.put('jwt', jwt)
   }
+
+  this.setAccountInfo = (accountInfo) => {
+    authContext.accountInfo = accountInfo
+  }
+
+  this.getAccountInfo = () => {
+    return authContext.accountInfo
+  }
+
 }])
 
-.factory('authInterceptor', ['$q','$state', '$timeout', function ($q, $state, $timeout) {
+.factory('authInterceptor', ['$q','$state', 'auth', function ($q, $state, auth) {
   return {
     'response': function(response) {
       console.log(response.status)
@@ -40,14 +50,15 @@ angular.module('app.services', [])
     },
     'responseError': function(error) {
       console.log(error)
-      if (error.status == -1) {
-        console.log('oops')
-      } else if (error.status == 403) {
+      if (error.status == 403 & (!error.config.url.includes('db_conn'))) {
         console.log('Unauthorized. Redirecting to login.')
         $state.go('login')
       }
+      return error
     },
     'request': function(config) {
+      config.headers.jwt = auth.getJwt()
+      console.log(config)
       return config
     }
   }
