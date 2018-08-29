@@ -61,7 +61,7 @@ app.config(['$stateProvider',
 }])
 
 
-app.run(['auth', '$http', 'globalVars', function(auth, $http, globalVars) {
+app.run(['auth', '$http', '$rootScope', '$state', '$transitions', 'globalVars', function(auth, $http, $rootScope, $state, $transitions, globalVars) {
   jwt = auth.getJwt()
   if (jwt) {
     $http.get(`${globalVars.apiUrl}startup`).then(response => {
@@ -74,6 +74,15 @@ app.run(['auth', '$http', 'globalVars', function(auth, $http, globalVars) {
     }, error => {
       console.log("error in startup response")
     })
-  } // If the jwt is not set, the user is not logged in. access of any protected route will redirect to login page
+  }
+
+  $transitions.onStart({ to: '**' }, function(trans) {
+    // var auth = trans.injector().get('AuthService');
+    // if (!auth.isAuthenticated()) {
+    //   // User isn't authenticated. Redirect to a new Target State
+    //   return trans.router.stateService.target('login');
+    // }
+    console.log('THE STATE HAS CHANGED')
+  });
 
 }])
