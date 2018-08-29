@@ -28,6 +28,7 @@ class User(BaseModel):
         sql = """
         SELECT u.id as user_id,
         u.email, 
+        u.password,
         a.id as account_id
         FROM user u
         JOIN account a ON u.account_id = a.id

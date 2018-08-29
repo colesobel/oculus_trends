@@ -1,0 +1,62 @@
+<navbar></navbar>
+<div class="nav-space"></div>
+<div class="form-container">
+    <a ui-sref="login">Log In</a>
+
+  <form>
+    <div class="form-group">
+      <label for="email">Company Name</label>
+      <input type="text"
+      class="form-control"
+      id="accountName"
+      placeholder="Enter email"
+      ng-model=signup.signupForm.accountName>
+    </div>
+
+    <div class="form-group">
+      <label for="email">First Name</label>
+      <input type="text"
+      class="form-control"
+      id="firstName"
+      placeholder="Enter email"
+      ng-model=signup.signupForm.firstName>
+    </div>
+
+    <div class="form-group">
+      <label for="email">Last Name</label>
+      <input type="text"
+      class="form-control"
+      id="lastName"
+      placeholder="Enter email"
+      ng-model=signup.signupForm.lastName>
+    </div>
+
+    <div class="form-group">
+      <label for="email">Email address</label>
+      <input type="email"
+      class="form-control"
+      id="emailSignup"
+      placeholder="Enter email"
+      ng-model=signup.signupForm.email>
+    </div>
+    <div class="form-group">
+      <label for="password">Password</label>
+      <input type="password"
+      class="form-control"
+      id="passwordSignup"
+      placeholder="Password"
+      ng-model=signup.signupForm.password>
+    </div>
+    <div class="form-group">
+      <label for="confirmPassword">Confirm Password</label>
+      <input type="password"
+      class="form-control"
+      id="confirmPasswordSignup"
+      placeholder="Confirm Password"
+      ng-model="signup.passwordConfirm">
+    </div>
+    <button type="submit"
+    class="btn btn-primary"
+    ng-click="signup.submitSignup()">Sign Up</button>
+  </form>
+</div>

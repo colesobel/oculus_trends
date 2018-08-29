@@ -1,6 +1,9 @@
 angular.module('app.dashController', ['app.services'])
 
-.controller('dashController', ['$http', '$state', '$rootScope', 'getDate', function($http, $state, $rootScope, getDate) {
+.controller('dashController', ['$location', '$http', '$state', '$rootScope', 'getDate', function($location, $http, $state, $rootScope, getDate) {
+
+
+  // $location.url("dash/hello")
 
   this.DataSource = {
         "chart": {

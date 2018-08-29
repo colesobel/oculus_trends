@@ -14,7 +14,8 @@ def login():
     if authenticated_user:
         user_data = utils.get_fields_from_dict(authenticated_user, 'user_id', 'email', 'account_id')
         jwt = auth.encode_jwt(data)
-
+        print(jwt)
+        print('just printed jwt')
         resp = Response(json.dumps(user_data))
         resp.headers['jwt'] = jwt
         resp.headers['Access-Control-Expose-Headers'] = 'jwt'

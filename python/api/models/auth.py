@@ -37,7 +37,6 @@ def check_pw(password, hashed):
     password = bytes(str(password).encode('utf-8'))
     hashed = bytes(hashed.encode('utf-8'))
     result = bcrypt.checkpw(password, hashed)
-    print(result)
     return result
 
 

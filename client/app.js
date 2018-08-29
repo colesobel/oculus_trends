@@ -5,6 +5,7 @@ var app = angular.module('app', [
   'app.homeController',
   'app.dashController',
   'app.loginController',
+  'app.signupController',
   'app.settingsController',
   'app.navDirective',
   'app.modalDirective',
@@ -25,7 +26,7 @@ app.config(['$stateProvider',
   $urlRouterProvider.otherwise('/')
   $stateProvider
     .state('dash', {
-      url: '/dash',
+      url: '/dash/:dashId/:dashName',
       templateUrl: '/partials/dash.html',
       controller: 'dashController',
       controllerAs: 'dash'
@@ -35,6 +36,12 @@ app.config(['$stateProvider',
       templateUrl: '/partials/login.html',
       controller: 'loginController',
       controllerAs: 'login'
+    })
+    .state('signup', {
+      url: '/signup',
+      templateUrl: '/partials/signup.html',
+      controller: 'signupController',
+      controllerAs: 'signup'
     })
     .state('settings', {
       url: '/settings',
