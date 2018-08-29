@@ -8,14 +8,14 @@ angular.module('app.loginController', [])
     console.log(login.loginForm)
 
     $http.post(globalVars.apiUrl + 'login', login.loginForm).then(user => {
-      console.log('the request succeeded')
+      console.log('login request succeeded')
       console.log(user)
       jwt = user.headers('jwt')
       auth.setJwt(jwt)
       $state.go('dash', {'dashId': '1', 'dashName': 'hello'})
       },
       error => {
-        console.log('The request failed')
+        console.log('login request failed')
         console.log(error)
       }
     )

@@ -50,11 +50,14 @@ angular.module('app.services', [])
     },
     'responseError': function(error) {
       console.log(error)
-      if (error.status == 403 & (!error.config.url.includes('db_conn'))) {
+      if (error.status == 401 && (!error.config.url.includes('db_conn'))) {
         console.log('Unauthorized. Redirecting to login.')
         $state.go('login')
+        return $q.reject(error)
+      } else {
+          return $q.reject(error)
       }
-      return error
+
     },
     'request': function(config) {
       config.headers.jwt = auth.getJwt()

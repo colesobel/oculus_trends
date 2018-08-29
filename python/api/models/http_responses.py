@@ -7,7 +7,7 @@ def unauthenticated():
         'Success': False,
         'Error': 'Unauthenticated'
     })
-    return Response(res_json, status=403, mimetype='application/json')
+    return Response(res_json, status=401, mimetype='application/json')
 
 
 def not_found():
