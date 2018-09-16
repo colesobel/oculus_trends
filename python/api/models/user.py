@@ -3,25 +3,70 @@ from api.models import sql, auth, database
 
 
 class User(BaseModel):
-    def __init__(self, account_id, email, password, first_name, last_name):
+    def __init__(self, id_, account_id, email, password, uuid, first_name, last_name, active):
         super().__init__()
+        self.id_ = id_
         self.account_id = account_id
         self.email = email
-        self.password = auth.hash_pw(password)
+        self.password = password  # This value is already hashed
+        self.uuid = uuid
         self.first_name = first_name
         self.last_name = last_name
+        self.active = active
 
-        self.timestamp_defaults = ['created_on']
-        self.columns = self.class_parameters
-        self.values = [self.__dict__.get(p) for p in self.class_parameters]
+    @classmethod
+    def find(cls, id_):
+        sql = """
+        SELECT 
+        id as id_, 
+        account_id, 
+        email, 
+        password, 
+        uuid, 
+        first_name, 
+        last_name, 
+        active
+        FROM user
+        WHERE id = %s
+        """
+        result = database.sql_fetch_one(sql, (id_, ))
+        return cls(**result)
 
-    def create(self):
-        result = sql.single_insert(table=self.table_name,
-                                   columns=self.columns,
-                                   values=self.values,
-                                   timestamps=self.timestamp_defaults,
-                                   uuid=True)
+    @classmethod
+    def create(cls, data: dict):
+        sql = """
+        INSERT INTO user (account_id, email, password, uuid, first_name, last_name, created_on)
+        VALUES ( %s, %s, %s, UUID(), %s, %s, NOW())
+        """
+        id_ = database.sql_insert(
+            sql,
+            (
+                data.get('account_id'),
+                data.get('email'),
+                data.get('password'),
+                data.get('first_name'),
+                data.get('last_name')
+            )
+          )
+
+        return cls.find(id_)
+
+    @staticmethod
+    def post(accountId, email, password, firstName, lastName):
+        """
+        should return a dict with all the fields needed to create a record in the "create" method
+        """
+        result = dict(
+            account_id=accountId,
+            email=email,
+            password=auth.hash_pw(password),
+            first_name=firstName,
+            last_name=lastName
+        )
+
         return result
+
+
 
     @staticmethod
     def find_by_email(email):
@@ -41,7 +86,8 @@ class User(BaseModel):
     @staticmethod
     def get_startup_info(email):
         sql = """
-        SELECT u.first_name AS user_first_name, 
+        SELECT 
+        u.first_name AS user_first_name, 
         u.id as user_id,
         a.name AS account_name, 
         a.id as account_id,
@@ -60,15 +106,8 @@ class User(BaseModel):
             'user_id': result[0]['user_id'],
             'account_name': result[0]['account_name'],
             'account_id': result[0]['account_id'],
-            'dashboards': [{'id': d['dashboard_id'],
-                            'name': d['dashboard_name']}
+            'dashboards': [{'id': d['dashboard_id'], 'name': d['dashboard_name']}
                            for d in result] if result[0]['dashboard_id'] else []
         }
 
         return startup_info
-
-
-
-User.get_startup_info('b@a.com')
-
-

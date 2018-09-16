@@ -1,6 +1,6 @@
 angular.module('app.signupController', [])
 
-.controller('signupController', ['$http', '$state', '$cookies', 'globalVars', 'auth', function($http, $state, $cookies, globalVars, auth) {
+.controller('signupController', ['$http', '$state', '$cookies', 'globalVars', 'userAuth', function($http, $state, $cookies, globalVars, userAuth) {
   let signup = this
 
   this.submitSignup = () => {
@@ -9,9 +9,8 @@ angular.module('app.signupController', [])
     $http.post(globalVars.apiUrl + 'signup', signup.signupForm).then(account => {
       console.log(account.data)
       jwt = account.headers('jwt')
-      auth.setJwt(jwt)
+      userAuth.setJwt(jwt)
       $state.go('settings')
-
     },
     error => {
       console.log('error in request')

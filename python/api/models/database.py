@@ -9,14 +9,16 @@ DATABASE = 'oculus_trends'
 
 
 def create_sql_connection(database=DATABASE, local_infile=False):
-    return pymysql.connect(host=HOST,
-                           user=USER,
-                           password=PASSWORD,
-                           database=database,
-                           use_unicode=True,
-                           charset="utf8",
-                           local_infile=local_infile,
-                           cursorclass=pymysql.cursors.DictCursor)
+    return pymysql.connect(
+        host=HOST,
+        user=USER,
+        password=PASSWORD,
+        database=database,
+        use_unicode=True,
+        charset="utf8",
+        local_infile=local_infile,
+        cursorclass=pymysql.cursors.DictCursor
+    )
 
 
 def sql_insert(query, args):
@@ -24,7 +26,7 @@ def sql_insert(query, args):
     try:
         with connection.cursor() as cursor:
             cursor.execute(query, args)
-            insert_id = connection.insert_id()
+            insert_id = cursor.lastrowid
             connection.commit()
     except Exception as e:
         raise e

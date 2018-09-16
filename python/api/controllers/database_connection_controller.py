@@ -11,22 +11,22 @@ database_connection_controller = Blueprint('database_connection_controller', __n
 def create():
     data = json.loads(request.data)
     account_id = auth.get_account_id_from_jwt(request)
+    data['accountId'] = account_id
     print(account_id)
     print(data)
-    db_conn = database_connection.DatabaseConnection.post(**data)
-    connection_test_result = db_conn.test_connection()
-    if not connection_test_result:
-
+    db_conn_data = database_connection.DatabaseConnection.post(**data)
+    test_result = database_connection.DatabaseConnection.test_connection(db_conn_data)
+    if not test_result:  # Client credentials not good
         resp = Response(json.dumps({
             'Sucess': False,
             'Error': 'Client Database Connection Failed'
         }))
         resp.status_code = 424
         return resp
+
     else:
-        db_conn.create()
-        resp = Response(db_conn.json_success())
-        resp.status_code = 201
-        return resp
+        connection = database_connection.DatabaseConnection.create(db_conn_data)
+        return http_responses.created(connection.json())
+
 
 

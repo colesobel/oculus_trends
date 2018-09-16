@@ -1,5 +1,9 @@
 angular.module('app.services', [])
 
+.service('globalVars', [function() {
+  this.apiUrl = 'http://localhost:5000/'
+}])
+
 .service('getDate', function() {
   this.getIso = function(date) {
     date = new Date(date).toISOString()
@@ -17,13 +21,42 @@ angular.module('app.services', [])
 }])
 
 
-.service('globalVars', ['$http', function() {
-  this.apiUrl = 'http://localhost:5000/'
-}])
-
-
-.service('auth', ['$cookies', function($cookies) {
+.service('userAuth', ['$http', '$cookies', '$state', 'globalVars', function($http, $cookies, $state, globalVars) {
   let authContext = this
+  this.authenticated = false
+
+  this.authenticate = (redirect) => {
+    if (!authContext.authenticated) {
+      jwt = authContext.getJwt()
+
+      if (jwt != undefined) {
+        $http.get(globalVars.apiUrl + 'startup').then(response => {
+          console.log(response.data)
+          if (response.data) {
+            authContext.setAccountInfo(response.data)
+            authContext.authenticated = true
+          }
+          else {
+            // No User data found
+            if (redirect) {
+              $state.go('login')
+            }
+          }
+        }, error => {
+          console.log("Authentication did not return 200")
+          if (redirect) {
+            $state.go('login')
+          }
+        })
+      } else {
+        // jwt undefined
+        if (redirect) {
+          $state.go('login')
+        }
+      }
+    }
+  }
+
   this.getJwt = () => {
     return $cookies.get('jwt')
   }
@@ -39,10 +72,9 @@ angular.module('app.services', [])
   this.getAccountInfo = () => {
     return authContext.accountInfo
   }
-
 }])
 
-.factory('authInterceptor', ['$q','$state', 'auth', function ($q, $state, auth) {
+.factory('authInterceptor', ['$q','$state', '$cookies', function ($q, $state, $cookies) {
   return {
     'response': function(response) {
       console.log(response.status)
@@ -60,7 +92,7 @@ angular.module('app.services', [])
 
     },
     'request': function(config) {
-      config.headers.jwt = auth.getJwt()
+      config.headers.jwt = $cookies.get('jwt')
       console.log(config)
       return config
     }

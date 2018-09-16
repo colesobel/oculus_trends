@@ -1,9 +1,9 @@
-angular.module('app.navDashDirective', [])
+angular.module('app.customNavDirective', [])
 
-.directive('navbar', [function() {
+.directive('customNav', [function() {
   return {
     restrict: 'E',
-    templateUrl: '/partials/navDash.html',
+    templateUrl: '/partials/customNav.html',
     scope: {
       dashName: '=',
       dashId: '='

@@ -1,6 +1,6 @@
 angular.module('app.loginController', [])
 
-.controller('loginController', ['$http', '$state', '$cookies', 'globalVars', 'auth', function($http, $state, $cookies, globalVars, auth) {
+.controller('loginController', ['$http', '$state', '$cookies', 'globalVars', 'userAuth', function($http, $state, $cookies, globalVars, userAuth) {
   let login = this
 
   this.submitLogin = () => {
@@ -11,7 +11,7 @@ angular.module('app.loginController', [])
       console.log('login request succeeded')
       console.log(user)
       jwt = user.headers('jwt')
-      auth.setJwt(jwt)
+      userAuth.setJwt(jwt)
       $state.go('dash', {'dashId': '1', 'dashName': 'hello'})
       },
       error => {

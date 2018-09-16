@@ -19,3 +19,15 @@ def not_found():
     resp.status_code = 404
     return resp
 
+
+def created(record: dict):
+    res_json = json.dumps(dict(
+        Success=True,
+        Status=201,
+        record=record
+    ))
+    resp = Response(res_json)
+    resp.status_code = 201
+    return resp
+
+

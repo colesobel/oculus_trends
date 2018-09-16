@@ -29,7 +29,14 @@ app.config(['$stateProvider',
       url: '/dash/:dashId/:dashName',
       templateUrl: '/partials/dash.html',
       controller: 'dashController',
-      controllerAs: 'dash'
+      controllerAs: 'dash',
+      resolve: {
+        _authenticate: ['$injector', function($injector) {
+          let userAuth = $injector.get('userAuth')
+          userAuth.authenticate(true)
+        }]
+      }
+
     })
     .state('login', {
       url: '/login',
@@ -47,7 +54,13 @@ app.config(['$stateProvider',
       url: '/settings',
       templateUrl: '/partials/settings.html',
       controller: 'settingsController',
-      controllerAs: 'settings'
+      controllerAs: 'settings',
+      resolve: {
+        _authenticate: ['$injector', function($injector) {
+          let userAuth = $injector.get('userAuth')
+          userAuth.authenticate(true)
+        }]
+      }
     })
     .state('home', {
       url: '/',
@@ -61,28 +74,6 @@ app.config(['$stateProvider',
 }])
 
 
-app.run(['auth', '$http', '$rootScope', '$state', '$transitions', 'globalVars', function(auth, $http, $rootScope, $state, $transitions, globalVars) {
-  jwt = auth.getJwt()
-  if (jwt) {
-    $http.get(`${globalVars.apiUrl}startup`).then(response => {
-      console.log("successful startup response")
-      console.log(response.data)
-      if (response.data) {
-        auth.setAccountInfo(response.data)
-        console.log(auth.getAccountInfo())
-      }
-    }, error => {
-      console.log("error in startup response")
-    })
-  }
-
-  $transitions.onStart({ to: '**' }, function(trans) {
-    // var auth = trans.injector().get('AuthService');
-    // if (!auth.isAuthenticated()) {
-    //   // User isn't authenticated. Redirect to a new Target State
-    //   return trans.router.stateService.target('login');
-    // }
-    console.log('THE STATE HAS CHANGED')
-  });
-
+app.run(['userAuth', '$rootScope', '$state', '$transitions', 'globalVars', function(userAuth, $rootScope, $state, $transitions, globalVars) {
+  userAuth.authenticate(false)
 }])

@@ -1,3 +1,18 @@
+import json
+from flask import Request
+
+
+def fields_from_request(request, *args):
+    data = json.loads(request.data)
+    results = []
+    for a in args:
+        results.append(data.get(a))
+
+    return tuple(results)
+
+
+
+
 
 def map_to_class(_dict, _class):
     try:
@@ -8,6 +23,17 @@ def map_to_class(_dict, _class):
 
 
 def get_fields_from_dict(_dict, *fields):
-    return {f: _dict[f] for f in fields}
+    """
+    each "field" can be either an element of the dict, or a tuple, where elem[0] is the field from dict,
+    elem[1] is the fuc to be applied to it, and any remaining elements will be applied as params to the function after
+    elem[0]
+    """
+    result = {}
+    for f in fields:
+        if isinstance(f, tuple):
+            k, func, *args = f
+            result[k] = func(_dict[k], *args)
+        else:
+            result[f] = _dict[f]
 
-
+    return result
