@@ -1,0 +1,12 @@
+<button routerLink="/app/dashboards/new" type="button" class="btn btn-info">New Dashboard &#x2b;</button>
+
+<h3>Dashboards</h3>
+<div class="list-group">
+  <li 
+    *ngFor="let db of dashboards"
+    class="list-group-item list-group-item-action clickable"
+    routerLink="/app/dashboard/{{db.id}}/{{db.url_alias}}">
+  {{ db.name }}
+  
+  </li>
+</div>

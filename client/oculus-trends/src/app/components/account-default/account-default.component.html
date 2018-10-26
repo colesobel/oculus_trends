@@ -1,0 +1,19 @@
+<button class="btn btn-info" routerLink="/app/account/db-connection/new">New Database Connection &#x2b;</button>
+<h3>Database Connections</h3>
+<div class="list-group">
+  <li class="list-group-item list-group-item-action"
+    *ngFor="let dbc of dbcs">
+    <div class="row justify-content-between">
+      <div class="col">
+        <img src="assets/images/database-icon.png" alt="database" class="img-responsive db-img"> {{ dbc.name }}
+      </div>
+      <div class="col-1">
+        <img 
+          src="assets/images/delete-icon.png" 
+          alt="delete" 
+          class="img-responsive clickable"
+          (click)="onDeleteDbConnection(dbc.name, dbc.id)">
+      </div>
+    </div>
+  </li>
+  </div>

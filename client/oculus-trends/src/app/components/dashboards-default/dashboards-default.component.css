@@ -1,0 +1,4 @@
+div.list-group {
+  max-height: 70vh;
+  overflow-y: scroll;
+}

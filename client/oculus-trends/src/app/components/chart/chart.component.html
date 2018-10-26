@@ -1,0 +1,14 @@
+<div #containerRef>
+  <fusioncharts
+    class="chart"
+    width="{{width}}"
+    height="{{height}}" 
+    type="column2d"
+    [dataSource]="dataSource">
+    <img src="assets/images/refresh-icon.png" alt="refresh" class="refresh">
+  </fusioncharts> 
+  <img #resizeRef src="assets/images/resize-icon.png" alt="resize" class="resize somethin-else">
+  <img (click)="onRefresh()" src="assets/images/refresh-icon.png" alt="refresh" class="refresh">
+</div>
+
+

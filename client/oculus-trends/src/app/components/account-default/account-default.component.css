@@ -1,0 +1,13 @@
+button {
+  margin-top: 10px;
+}
+
+div.list-group {
+  max-height: 400px;
+  overflow-y: scroll;
+}
+
+img {
+  height: 25px;
+  margin: 0 15px 0 15px;
+}

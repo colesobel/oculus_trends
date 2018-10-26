@@ -1,0 +1,29 @@
+<div class="row justify-content-md-center">
+  <div class="col-lg-6">
+    <div class="card">
+      <div class="card-header">
+        <div class="row justify-content-md-center">
+          <h4>
+            New Dashboard
+          </h4>
+        </div>
+      </div>
+      <div class="card-body">
+        <form (ngSubmit)="onDashboardSubmit(dashboardForm)" #dashboardForm="ngForm">
+          <div class="form-group">
+            <label for="dashboardName">Dashboard Name</label>
+            <input 
+              required
+              type="text"
+              name="name"
+              id="dashboardName"
+              placeholder="Dashboard Name"
+              ngModel
+              class="form-control">
+          </div>
+          <button [disabled]="(dashboardForm.valid && submitted) || (!submitted && dashboardForm.invalid)" class="btn btn-info">Save</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

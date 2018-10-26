@@ -1,0 +1,99 @@
+<div class="row justify-content-md-center">
+  <div class="col-lg-6">
+    <div class="card">
+      <div class="card-header" id="headingOne">
+        <h5 class="mb-0">
+          <div class="row justify-content-md-center">
+            <h4>Create a Database Connection</h4>
+          </div>
+        </h5>
+      </div>
+      <div>
+        <div class="card-body">
+          <form (ngSubmit)="onConnectionSubmit(connectionForm)" #connectionForm="ngForm">
+
+            <div class="form-group">
+              <label for="connectionName">Connection Name</label>
+              <input 
+                required 
+                name="connectionName" 
+                type="text" 
+                class="form-control" 
+                id="connectionName"
+                ngModel
+                placeholder="Connection Name">
+            </div>
+
+            <label for="databaseServer">Database Server</label> <br>
+            <select class="form-control" name="databaseServer" ngModel="mysql">
+              <option value="mysql">MySQL</option>
+              <option value="postgres">PostgreSQL</option>
+              <option value="redshift">Redshift</option>
+            </select>
+
+            <div class="form-group">
+              <label for="databaseName">Database Name</label>
+              <input 
+                required 
+                name="databaseName" 
+                type="text" 
+                class="form-control" 
+                id="databaseName" 
+                ngModel
+                placeholder="Database Name">
+            </div>
+
+            <div class="form-group">
+              <label for="host">Host</label>
+              <input 
+                required 
+                name="host" 
+                type="text" 
+                class="form-control" 
+                id="host" 
+                ngModel
+                placeholder="Host">
+            </div>
+
+            <div class="form-group">
+              <label for="port">Port</label>
+              <input 
+                required 
+                name="port" 
+                type="number" 
+                class="form-control" 
+                id="port" 
+                ngModel
+                placeholder="Port">
+            </div>
+
+            <div class="form-group">
+              <label for="user">user</label>
+              <input 
+                required 
+                name="user" 
+                type="text" 
+                class="form-control" 
+                id="user" 
+                ngModel
+                placeholder="User">
+            </div>
+
+            <div class="form-group">
+              <label for="password">Password</label>
+              <input 
+                name="password" 
+                type="text" 
+                class="form-control" 
+                id="password" 
+                ngModel
+                placeholder="Password">
+            </div>
+
+            <button [disabled]="(!submitted && connectionForm.invalid) || (connectionForm.valid && submitted)" type="submit" class="btn btn-info">Save</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

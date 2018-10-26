@@ -1,0 +1,9 @@
+.dashboard {
+  position: relative;
+  min-width: 100%;
+}
+
+.add-chart-warning {
+    display: flex;
+    justify-content: center;
+}
