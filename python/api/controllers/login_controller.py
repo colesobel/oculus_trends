@@ -10,11 +10,15 @@ login_controller = Blueprint('login_controller', __name__)
 def login():
     data = json.loads(request.data)
     authenticated_user = lg.login_user(**data)
-    print('here is the authenticated user')
-    print(authenticated_user)
     if authenticated_user:
-        user_data = utils.get_fields_from_dict(authenticated_user, 'user_id', 'email', 'account_id')
+        user_data = {
+            'user_id': authenticated_user.id_,
+            'email': authenticated_user.email,
+            'account_id': authenticated_user.account_id,
+            'role_id': authenticated_user.role_id
+        }
         jwt = auth.encode_jwt(**user_data)
+        user_data['account_info'] = user.User.get_startup_info(user_data['email'])
         resp = Response(json.dumps(user_data))
         resp.headers['jwt'] = jwt
         resp.headers['Access-Control-Expose-Headers'] = 'jwt'
@@ -40,7 +44,8 @@ def signup():
     jwt = auth.encode_jwt(
         account_id=usr.account_id,
         email=usr.email,
-        user_id=usr.id_
+        user_id=usr.id_,
+        role_id=usr.role_id
     )
 
     resp = make_response()

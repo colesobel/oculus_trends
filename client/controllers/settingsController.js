@@ -1,34 +1,31 @@
 angular.module('app.settingsController', [])
 
 
-.controller('settingsController', ['$state', '$http', '$document', 'globalVars', '$timeout', function($state, $http, $document, globalVars, $timeout) {
-  // $http.get(globalVars.apiUrl + 'testing').then(resp => {
-  //   console.log('good resp')
-  //   console.log(resp)
-  // }, error => {
-  //   console.log('bad resp')
-  // })
-  let settings = this
+.controller('settingsController', ['$scope', '$state', '$http', '$document', 'globalVars', '$timeout', function($scope, $state, $http, $document, globalVars, $timeout) {
+  let settings = $scope
+
+  let dismissModal = (id) => {
+    angular.element(document.getElementById(id)).modal('hide')
+  }
 
   settings.submitDatabaseConnection = () => {
     console.log(settings.dbInfo)
     $http.post(globalVars.apiUrl + 'db_conn', settings.dbInfo).then(response => {
       if (response.status == 403) {
-        console.log('dismissing modal')
-        settings.dismissModal()
+        dismissModal('dbConnectionModal')
         $timeout(() => {
           $state.go('login')
-        }, 500)
+        }, 300)
 
       }
 
       console.log(response.data)
 
-      settings.dismissModal()
+      dismissModal('dbConnectionModal')
     }, error => {
       console.log(error)
       console.log('error')
-      settings.dismissModal()
+      dismissModal('dbConnectionModal')
     })
 
   }

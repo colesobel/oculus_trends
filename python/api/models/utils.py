@@ -1,17 +1,21 @@
+from decimal import Decimal
+from datetime import datetime
 import json
+import re
 from flask import Request
 
 
 def fields_from_request(request, *args):
+    """
+
+    yields a tuple of results
+    """
     data = json.loads(request.data)
     results = []
     for a in args:
         results.append(data.get(a))
 
     return tuple(results)
-
-
-
 
 
 def map_to_class(_dict, _class):
@@ -37,3 +41,23 @@ def get_fields_from_dict(_dict, *fields):
             result[f] = _dict[f]
 
     return result
+
+
+def to_url_alias(name):
+    name = name.lower()
+    name = re.sub('[^a-z0-9\s]+', '', name)
+    name = re.sub('\s', '_', name)
+    return name
+
+
+def serialize(o):
+    if isinstance(o, Decimal):
+        return round(float(o), 5)
+    elif isinstance(o, datetime):
+        return str(o)
+    else:
+        return o
+
+
+def to_json(o):
+    return json.dumps(o, default=serialize)

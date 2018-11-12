@@ -24,37 +24,75 @@ angular.module('app.services', [])
 .service('userAuth', ['$http', '$cookies', '$state', 'globalVars', function($http, $cookies, $state, globalVars) {
   let authContext = this
   this.authenticated = false
+  this.accountInfo = undefined
+
+  // this.authenticate = (redirect) => {
+  //   if (!authContext.authenticated) {
+  //     jwt = authContext.getJwt()
+  //
+  //     if (jwt != undefined) {
+  //       $http.get(globalVars.apiUrl + 'startup').then(response => {
+  //         console.log(response.data)
+  //         if (response.data) {
+  //           authContext.setAccountInfo(response.data)
+  //           authContext.authenticated = true
+  //         }
+  //         else {
+  //           // No User data found
+  //           if (redirect) {
+  //             $state.go('login')
+  //           }
+  //         }
+  //       }, error => {
+  //         console.log("Authentication did not return 200")
+  //         if (redirect) {
+  //           $state.go('login')
+  //         }
+  //       })
+  //     } else {
+  //       // jwt undefined
+  //       if (redirect) {
+  //         $state.go('login')
+  //       }
+  //     }
+  //   }
+  // }
 
   this.authenticate = (redirect) => {
-    if (!authContext.authenticated) {
-      jwt = authContext.getJwt()
+    return new Promise((resolve, reject) => {
+      if (!authContext.authenticated) {
+        jwt = authContext.getJwt()
 
-      if (jwt != undefined) {
-        $http.get(globalVars.apiUrl + 'startup').then(response => {
-          console.log(response.data)
-          if (response.data) {
-            authContext.setAccountInfo(response.data)
-            authContext.authenticated = true
-          }
-          else {
-            // No User data found
+        if (jwt != undefined) {
+          $http.get(globalVars.apiUrl + 'startup').then(response => {
+            console.log(response.data)
+            if (response.data) {
+              authContext.setAccountInfo(response.data)
+              authContext.authenticated = true
+              resolve()
+            } else {
+              // No User data found
+              if (redirect) {
+                $state.go('login')
+              }
+              resolve()
+            }
+          }, error => {
+            console.log("Authentication did not return 200")
             if (redirect) {
               $state.go('login')
             }
-          }
-        }, error => {
-          console.log("Authentication did not return 200")
+            resolve()
+          })
+        } else {
+          // jwt undefined
           if (redirect) {
             $state.go('login')
           }
-        })
-      } else {
-        // jwt undefined
-        if (redirect) {
-          $state.go('login')
+          resolve()
         }
       }
-    }
+    })
   }
 
   this.getJwt = () => {
@@ -70,7 +108,22 @@ angular.module('app.services', [])
   }
 
   this.getAccountInfo = () => {
-    return authContext.accountInfo
+    return new Promise((resolve, reject) => {
+      if (authContext.accountInfo == undefined) {
+        authContext.authenticate(false).then(() => {
+          resolve(authContext.accountInfo)
+        })
+      } else {
+        resolve(authContext.accountInfo)
+      }
+    })
+  }
+
+  this.logOut = () => {
+    $cookies.remove('jwt')
+    authContext.accountInfo = undefined
+    authContext.authenticated = false
+    $state.go('login')
   }
 }])
 

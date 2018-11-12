@@ -1,14 +1,16 @@
+from concurrent import futures
 from api.models.base_model import BaseModel
-from api.models import sql, auth, database
+from api.models import sql, auth, database, utils, database_connection
 
 
 class User(BaseModel):
-    def __init__(self, id_, account_id, email, password, uuid, first_name, last_name, active):
+    def __init__(self, id_, account_id, role_id, email, password, uuid, first_name, last_name, active):
         super().__init__()
         self.id_ = id_
         self.account_id = account_id
+        self.role_id = role_id
         self.email = email
-        self.password = password  # This value is already hashed
+        self.password = password  # This value is hashed
         self.uuid = uuid
         self.first_name = first_name
         self.last_name = last_name
@@ -20,6 +22,7 @@ class User(BaseModel):
         SELECT 
         id as id_, 
         account_id, 
+        role_id,
         email, 
         password, 
         uuid, 
@@ -67,21 +70,40 @@ class User(BaseModel):
         return result
 
 
+    # @staticmethod
+    # def find_by_email(email):
+    #     sql = """
+    #     SELECT u.id as user_id,
+    #     u.email,
+    #     u.password,
+    #     a.id as account_id,
+    #     u.role_id
+    #     FROM user u
+    #     JOIN account a ON u.account_id = a.id
+    #     WHERE email = %s
+    #     """
+    #     args = (email, )
+    #
+    #     return database.sql_fetch_one(sql, args)
 
-    @staticmethod
-    def find_by_email(email):
+    @classmethod
+    def find_by_email(cls, email):
         sql = """
-        SELECT u.id as user_id,
-        u.email, 
-        u.password,
-        a.id as account_id
-        FROM user u
-        JOIN account a ON u.account_id = a.id
+        SELECT 
+        id as id_, 
+        account_id, 
+        role_id,
+        email, 
+        password, 
+        uuid, 
+        first_name, 
+        last_name, 
+        active
+        FROM user
         WHERE email = %s
         """
-        args = (email, )
-
-        return database.sql_fetch_one(sql, args)
+        result = database.sql_fetch_one(sql, (email, ))
+        return cls(**result)
 
     @staticmethod
     def get_startup_info(email):
@@ -91,6 +113,7 @@ class User(BaseModel):
         u.id as user_id,
         a.name AS account_name, 
         a.id as account_id,
+        u.role_id as role_id,
         d.id AS dashboard_id, 
         d.name AS dashboard_name
         FROM `user` u
@@ -99,15 +122,31 @@ class User(BaseModel):
         WHERE u.email = %s;
         """
         args = (email, )
-        result = database.sql_fetch_all(sql, args)
+        with futures.ThreadPoolExecutor(max_workers=2) as executor:
+            result = executor.submit(database.sql_fetch_all, sql, args)
+            dbcs = executor.submit(database_connection.DatabaseConnection.get_all_for_email, email)
+
+        result = result.result()
+
+        dashboards = []
+        for d in result:
+            db = {
+                'id': d['dashboard_id'],
+                'name': d['dashboard_name'],
+                'url_alias': utils.to_url_alias(d['dashboard_name'])
+            }
+            dashboards.append(db)
+
+        dbcs = dbcs.result()
 
         startup_info = {
             'first_name': result[0]['user_first_name'],
             'user_id': result[0]['user_id'],
             'account_name': result[0]['account_name'],
             'account_id': result[0]['account_id'],
-            'dashboards': [{'id': d['dashboard_id'], 'name': d['dashboard_name']}
-                           for d in result] if result[0]['dashboard_id'] else []
+            'role_id': result[0]['role_id'],
+            'dashboards': dashboards,
+            'dbcs': [dbc.json() for dbc in dbcs]
         }
 
         return startup_info

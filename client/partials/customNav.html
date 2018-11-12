@@ -1,0 +1,108 @@
+<div class="navbar-custom">
+
+  <div class="dropdown">
+    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      Dashboards
+    </button>
+    <div class="dropdown-menu dashboard-drop" aria-labelledby="dropdownMenuButton">
+      <!-- The following two li's are switched based on whether the state name is 'dash' -->
+      <input
+        type="search"
+        placeholder="Search"
+        aria-label="search"
+        class="form-control text">
+      <div class="dropdown-divider"></div>
+      <li
+        ng-repeat="dashboard in allDashboards"
+        class="dropdown-item pointer"
+        ui-sref="dash({dashId: dashboard.id, dashName: dashboard.url_alias})">
+        {{dashboard.name}}
+      </li>
+    </div>
+  </div>
+
+
+  <div class="dropdown">
+    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      Preferences
+    </button>
+    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+      <!-- The following two li's are switched based on whether the state name is 'dash' -->
+      <li
+        ng-if="stateName != createChartStateName"
+        class="dropdown-item pointer disabled">
+        New Chart
+      </li>
+      <li
+        ng-if="stateName == createChartStateName"
+        class="dropdown-item pointer"
+        ui-sref="chart({dashId: routeParams.dashId})">
+        New Chart
+      </li>
+
+      <li
+        class="dropdown-item pointer"
+        data-toggle="modal"
+        data-target="#dashboardModal">
+        New Dashboard
+      </li>
+      <li ui-sref="settings" class="dropdown-item pointer">Settings</li>
+      <div class="dropdown-divider"></div>
+      <li ng-click="logOut()" class="dropdown-item pointer">Log Out</li>
+    </div>
+  </div>
+
+</div>
+
+<!-- Chart Modal -->
+<!-- <div class="modal fade" id="chartModal" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">New Chart</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="form-group">
+            <label for="newDashboardName">Chart Name</label>
+            <input required ng-model="newDashboardName" type="text" class="form-control" id="newChartName" placeholder="Chart Name">
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary" ng-click="createNewChart()">Save</button>
+      </div>
+    </div>
+  </div>
+</div> -->
+
+
+<!-- Dashboard Modal -->
+<div class="modal fade" id="dashboardModal" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">New Dashboard</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="form-group">
+            <label for="newDashboardName">Dashboard Name</label>
+            <input required ng-model="newDashboard.name" type="text" class="form-control" id="newDashboardName" placeholder="Dashboard Name">
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary" ng-click="createNewDashboard()">Save</button>
+      </div>
+    </div>
+  </div>
+</div>

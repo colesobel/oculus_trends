@@ -7,8 +7,9 @@ var app = angular.module('app', [
   'app.loginController',
   'app.signupController',
   'app.settingsController',
+  'app.chartController',
   'app.navDirective',
-  'app.modalDirective',
+  'app.customNavDirective',
   'ng-fusioncharts',
   'app.chartDirective',
   'app.services',
@@ -33,7 +34,9 @@ app.config(['$stateProvider',
       resolve: {
         _authenticate: ['$injector', function($injector) {
           let userAuth = $injector.get('userAuth')
-          userAuth.authenticate(true)
+          userAuth.authenticate(true).catch((e) => {
+            console.log(e)
+          })
         }]
       }
 
@@ -54,11 +57,12 @@ app.config(['$stateProvider',
       url: '/settings',
       templateUrl: '/partials/settings.html',
       controller: 'settingsController',
-      controllerAs: 'settings',
       resolve: {
         _authenticate: ['$injector', function($injector) {
           let userAuth = $injector.get('userAuth')
-          userAuth.authenticate(true)
+          userAuth.authenticate(true).catch((e) => {
+            console.log(e)
+          })
         }]
       }
     })
@@ -67,6 +71,19 @@ app.config(['$stateProvider',
       templateUrl: '/partials/home.html',
       controller: 'homeController',
       controllerAs: 'home'
+    })
+    .state('chart', {
+      url: '/dash/:dashId/chart',
+      templateUrl: '/partials/createChart.html',
+      controller: 'chartController',
+      resolve: {
+        _authenticate: ['$injector', function($injector) {
+          let userAuth = $injector.get('userAuth')
+          userAuth.authenticate(true).catch((e) => {
+            console.log(e)
+          })
+        }]
+      }
     })
     // $locationProvider.html5Mode(true);
 

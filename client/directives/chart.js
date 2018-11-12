@@ -63,7 +63,6 @@ angular.module('app.chartDirective', [])
 
 
       //Draggable Code
-      var startX = 0, startY = 0
       var x = scope.chartInfo.x * screenWidth
       var y = scope.chartInfo.y * screenHeight
 

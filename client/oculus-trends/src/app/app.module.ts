@@ -31,6 +31,7 @@ import { DashboardsComponent } from './components/dashboards/dashboards.componen
 import { DashboardsDefaultComponent } from './components/dashboards-default/dashboards-default.component';
 import { NewDashboardComponent } from './components/new-dashboard/new-dashboard.component';
 import { NewChartComponent } from './components/new-chart/new-chart.component';
+import { TableComponent } from './components/table/table.component';
 
 FusionChartsModule.fcRoot(FusionCharts, Charts)
 
@@ -65,7 +66,8 @@ FusionChartsModule.fcRoot(FusionCharts, Charts)
     DashboardsComponent,
     DashboardsDefaultComponent,
     NewDashboardComponent,
-    NewChartComponent
+    NewChartComponent,
+    TableComponent
   ],
   imports: [
     BrowserModule,

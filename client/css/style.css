@@ -29,6 +29,35 @@
   width: 100%;
 }
 
+.menu-icon {
+    width: 35px;
+    height: 3px;
+    background-color: black;
+    margin: 3px 0;
+}
+
+.dashboard-drop {
+  height: 50vh;
+  min-height: 200px;
+  overflow-y: scroll;
+}
+
+.new-chart-form {
+  width: 50vh;
+}
+
+.pointer {
+  cursor: pointer;
+}
+
+.text {
+  cursor: text;
+}
+
+.disabled {
+  cursor: not-allowed;
+}
+
 .refresh {
   position: absolute;
   top: 0;
@@ -251,27 +280,6 @@
   margin: auto;
   width: 60%;
   min-width: 300px;
-}
-
-.venue-img {
-  display: block;
-  width: 50%;
-  height: auto;
-  cursor: pointer;
-}
-
-.yelp-logo {
-  margin: 0px;
-  float: right;
-  width: 75px;
-  cursor: pointer;
-}
-
-.yelp-stars {
-  width: 100px;
-  height: auto;
-  float: right;
-  margin-top: 18px;
 }
 
 .img-modal {

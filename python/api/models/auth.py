@@ -80,11 +80,12 @@ def decode_jwt(token=None):
             return None
 
 
-def encode_jwt(user_id, email, account_id):
+def encode_jwt(user_id, email, account_id, role_id):
     data = dict(
         user_id=user_id,
         email=email,
-        account_id=account_id
+        account_id=account_id,
+        role_id=role_id
     )
     encoded = jwt.encode(data, key=jwt_secret, algorithm=jwt_algo)
     return encoded
@@ -100,15 +101,36 @@ def authenticate(func):
         else:
             return func(*args, **kwargs)
 
+    wrapped.__name__ = func.__name__
     return wrapped
+
+
+def authorize(*roles):
+    def outer_wrap(func):
+        def inner_wrap(*args, **kwargs):
+            auth_info = decode_jwt()
+            if not auth_info:
+                return http_responses.unauthenticated()
+            elif auth_info.get('role_id') not in roles:
+                return http_responses.unauthorized()
+            return func(*args, **kwargs)
+
+        return inner_wrap
+
+    return outer_wrap
 
 
 def get_account_id_from_jwt(request):
     jwt = request.headers.get('jwt')
     decoded_jwt = decode_jwt(jwt)
-    print('decoded jwt')
-    print(decoded_jwt)
     return decoded_jwt['account_id']
+
+
+def get_field_from_jwt(request, field):
+    jwt = request.headers.get('jwt')
+    decoded_jwt = decode_jwt(jwt)
+    return decoded_jwt[field]
+
 
 
 # cipher_text, key = fernet_encrypt('hi there encrypt this')

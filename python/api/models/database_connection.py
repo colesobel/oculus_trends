@@ -3,11 +3,10 @@ import pymysql
 import psycopg2 as ps
 from psycopg2.extras import RealDictCursor
 from cryptography.fernet import Fernet
-from api.models.database import client_mysql_fetch_all, sql_insert, sql_fetch_one
-from api.models import auth, utils
+from api.models import auth, utils, base_model, database
 
 
-class DatabaseConnection:
+class DatabaseConnection(base_model.BaseModel):
     def __init__(
         self,
         id_,
@@ -37,13 +36,55 @@ class DatabaseConnection:
                 port = 5439
             else:  # MySQL
                 port = 3306
-        print(database_server, database_name, host, user, password, port)
 
     def json(self):
-        return json.dumps({
+        return {
             'id': self.id_,
             'name': self.connection_name
-        })
+        }
+
+    def connect_to_database(self):
+        if self.database_server == 'mysql':
+            return self.connect_to_mysql(self.__dict__)
+        elif self.database_server in ['redshift', 'postgres']:
+            return self.connect_to_postgres(self.__dict__)
+
+    def postgres_fetch_all(self, query):
+        connection = self.connect_to_postgres(self.__dict__)
+        cursor = connection.cursor(cursor_factory=RealDictCursor)
+        try:
+            cursor.execute(query)
+            return cursor.fetchall()
+        except Exception as e:
+            print(e)
+        finally:
+            cursor.close()
+            connection.close()
+
+    def mysql_fetch_all(self, query):
+        connection = self.connect_to_mysql(self.__dict__)
+        try:
+            with connection.cursor() as cursor:
+                cursor.execute(query)
+                result = cursor.fetchall()
+        except Exception as e:
+            raise e
+        else:
+            return result
+        finally:
+            connection.close()
+
+    def run_query(self, query):
+        """
+        for SELECT queries only
+        """
+        connection = self.connect_to_database()
+        if self.database_server == 'mysql':
+            return self.mysql_fetch_all(query)
+        elif self.database_server in ['redshift', 'postgres']:
+            return self.postgres_fetch_all(query)
+        else:
+            return []
 
     @staticmethod
     def connect_to_mysql(connection_info):
@@ -53,8 +94,8 @@ class DatabaseConnection:
             user=connection_info['user'],
             password=connection_info['password'],
             database=connection_info['database_name'],
-            # use_unicode=True,
-            # charset="utf8",
+            use_unicode=True,
+            charset="utf8",
             local_infile=True,
             cursorclass=pymysql.cursors.DictCursor
         )
@@ -124,7 +165,7 @@ class DatabaseConnection:
                 iv=data['iv']).cipher_text,
             data['port']
         )
-        id_ = sql_insert(dbc_sql, dbc_args)
+        id_ = database.sql_insert(dbc_sql, dbc_args)
         key_sql = """
         INSERT INTO dbc_key (`uuid`, 
         `dbc_id`, 
@@ -146,9 +187,10 @@ class DatabaseConnection:
             data['iv']
         )
 
-        sql_insert(key_sql, key_args)
+        database.sql_insert(key_sql, key_args)
 
-        return cls.find(id_)
+        return cls.find(id_, data['account_id'])
+
 
     @classmethod
     def test_connection(cls, connection_info):
@@ -158,7 +200,7 @@ class DatabaseConnection:
                 connection = cls.connect_to_postgres(connection_info)
             else:  # MySQL
                 connection = cls.connect_to_mysql(connection_info)
-                result = client_mysql_fetch_all(connection, query, ())
+                result = database.client_mysql_fetch_all(connection, query, ())
         except Exception as e:
             print('Database connection error!')
             print(e)
@@ -189,7 +231,7 @@ class DatabaseConnection:
         return connection_info
 
     @classmethod
-    def find(cls, id_):
+    def find(cls, id_, account_id):
         """
         Creates an instance of DatabaseConnection from database
         """
@@ -209,8 +251,9 @@ class DatabaseConnection:
         FROM dbc
         JOIN dbc_key dbck ON dbc.id = dbck.dbc_id
         WHERE dbc.id = %s
+        and account_id = %s
         """
-        dbc = sql_fetch_one(query, (id_, ))
+        dbc = database.sql_fetch_one(query, (id_, account_id))
         if not dbc:
             return None
         a_key, iv, f_key = dbc['a_key'], dbc['iv'], dbc['f_key']
@@ -229,11 +272,63 @@ class DatabaseConnection:
         return cls(**dbc_args)
 
     @classmethod
-    def get_all_for_account_id(cls, account_id):
-        pass
+    def get_all_for_email(cls, email):
+        sql = """
+        SELECT dbc.id AS id_, 
+        dbc.account_id, 
+        dbc.name as connection_name, 
+        dbc.db_server as database_server, 
+        dbc.db_name as database_name, 
+        dbc.host,
+        dbc.user, 
+        dbc.password, 
+        dbc.port, 
+        dbck.a_key, 
+        dbck.iv, 
+        dbck.f_key
+        FROM dbc
+        JOIN dbc_key dbck ON dbc.id = dbck.dbc_id
+        JOIN account acc ON dbc.account_id = acc.id
+        JOIN user u ON acc.id = u.account_id
+        WHERE u.email = %s
+        AND dbc.deleted = 0
+        """
+        dbcs = database.sql_fetch_all(sql, (email,))
 
+        finalized_dbcs = []
 
+        for dbc in dbcs:
+            a_key, iv, f_key = dbc['a_key'], dbc['iv'], dbc['f_key']
+            dbc_args = utils.get_fields_from_dict(
+                dbc,
+                'id_',
+                'account_id',
+                'connection_name',
+                ('database_server', auth.decrypt_all, a_key, iv, f_key),
+                ('database_name', auth.decrypt_all, a_key, iv, f_key),
+                ('host', auth.decrypt_all, a_key, iv, f_key),
+                ('user', auth.decrypt_all, a_key, iv, f_key),
+                ('password', auth.decrypt_all, a_key, iv, f_key),
+                'port'
+            )
 
+            full_dbc = cls(**dbc_args)
+            finalized_dbcs.append(full_dbc)
+
+        return finalized_dbcs
+
+    @staticmethod
+    def delete(id_, account_id):
+        sql= """
+        UPDATE dbc
+        JOIN account a ON dbc.account_id = a.id
+        SET dbc.deleted = %s
+        WHERE dbc.id = %s
+        AND a.id = %s
+        """
+        args = (1, id_, account_id)
+        rows_affected = database.sql_execute(sql, args)
+        print('rows_affected: {}'.format(rows_affected))
 
 
 # connection = ps.connect(dbname='appthis', host='batman.ctdsfkofgm52.us-west-2.redshift.amazonaws.com',
@@ -249,16 +344,6 @@ class DatabaseConnection:
 # dict_cursor.execute(sql)
 # result = dict_cursor.fetchall()
 
-# dbcon = DatabaseConnection.post(
-#     accountId=48,
-#     connectionName='new',
-#     databaseServer='mysql',
-#     databaseName='appthis_v2',
-#     host='broadway-cluster-1.cluster-ro-cm6uyt5aeae8.us-west-2.rds.amazonaws.com',
-#     user='root',
-#     password='Mah14Mah1',
-#     port=3306
-# )
 # connection_test = DatabaseConnection.test_connection(dbcon)
 # if connection_test:
 #     thecon = DatabaseConnection.create(dbcon)
@@ -268,4 +353,3 @@ class DatabaseConnection:
 
 #
 # result = dbcon.test_connection()
-# dbcon.create(48)

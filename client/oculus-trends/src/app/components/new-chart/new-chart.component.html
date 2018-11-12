@@ -1,18 +1,20 @@
 <br>
-<div class="container">
+<div class="container-fluid">
   <div class="row justify-content-md-center">
-      <div class="col-lg-6">
+      <div class="col-lg-4">
         <div class="card">
           <div class="card-header">
             <div class="row justify-content-md-center">
               <h4>New Chart</h4>
             </div>
           </div>
-          <div class="card-body">
+          <div class="card-body" #formRef>
             <form (ngSubmit)="onSubmit(chartForm)" #chartForm="ngForm">
               <div class="form-group">
                 <label for="name">Chart Name</label>
                 <input 
+                  (change)="onChartSettingChange()"
+                  #chartNameRef
                   required
                   ngModel
                   class="form-control"
@@ -22,38 +24,85 @@
                   placeholder="Chart Name">
               </div>
               <div class="form-group">
-                <label for="chart-type">Chart Type <span>(editable after query tested)</span> </label>
-                <select disabled class="form-control" name="chart_type" id="chart-type">
-                  <option value="table">table</option>
-                  <option value="column2d">2d Column</option>
-                </select>
               </div>
               <div class="form-group">
                 <label for="dbcId">Database</label>
-                <select #dbcIdRef ngModel class="form-control" name="dbcId" id="database">
+                <select (change)="onChartSettingChange()" #dbcIdRef ngModel class="form-control" name="dbcId" id="database">
                   <option *ngFor="let dbc of dbcs" value="{{dbc.id}}">{{ dbc.name }}</option>
                 </select>
               </div>
               <div class="form-group">
                 <label for="query">SQL Statement</label>
-                <textarea #queryRef required ngModel name="query" id="query" style="width: 100%; min-height: 200px" placeholder="Write SQL here..."></textarea>
+                <textarea (change)="onChartSettingChange()" #queryRef required ngModel name="query" id="query" style="width: 100%; min-height: 300px" placeholder="Write SQL here..."></textarea>
               </div>
-              <!-- <div class="form-group">
-                <label for="name">Chart Name</label>
-                <input 
-                  required
-                  ngModel
-                  class="form-control"
-                  type="text"
-                  name="name"
-                  id="name"
-                  placeholder="Chart Name">
-              </div> -->
-              <div class="btn btn-info" (click)="runQuery(dbcIdRef, queryRef)">Run Query</div>
-              <button [disabled]="(chartForm.valid && submitted) || (!submitted && chartForm.invalid)" class="btn btn-info">Save Chart</button>
+              <div class="row justify-content-between">
+                <div class="col-auto">
+                    <div class="btn btn-info" (click)="runQuery(dbcIdRef, queryRef)">Run Query</div>
+                </div>
+                <div class="col-auto">
+                    <button [disabled]="(chartForm.valid && submitted) || (!submitted && chartForm.invalid)" class="btn btn-info">Save Chart</button>
+                </div>
+              </div>
             </form>
           </div>
         </div>
+      </div>
+      <div class="col-lg-8 chart-example">
+        <div class="card">
+          <div class="card-header">
+            <div class="row justify-content-md-center">
+              <h4>Chart Preview</h4>
+            </div>
+          </div>
+          <div class="card-body chart-example" #chartPreviewRef>
+            <div class="container-fluid">
+              <div class="row">
+                <label for="chart-type">Chart Type</label>
+                <select #chartTypeRef (change)="onChartTypeChange()" [disabled]="!showTable" [(ngModel)]="chartType" class="form-control" name="chart_type" id="chart-type">
+                  <option value="table">Table</option>
+                  <option value="column">Column</option>
+                </select>
+              </div>
+              <div *ngIf="showAxesSelects.includes(chartType)" class="row justify-content-between">
+                <div class="col-lg-6">
+                  <label for="x-axis">X Axis</label>
+                  <select (change)="onChartSettingChange()" #xAxisRef class="form-control" name="x-axis" id="x-axis" (change)="onAxisChange(xAxisRef.value, yAxisRef.value)">
+                    <option disabled value="{{xAxis}}">Select X Axis</option>
+                    <option *ngFor="let col of queryResponse.columns" value="{{col}}">{{ col }}</option>
+                  </select>
+                </div>
+                <div class="col-lg-6">
+                  <label for="y-axis">Y Axis</label>
+                  <select (change)="onChartSettingChange()" #yAxisRef class="form-control" name="y-axis" id="y-axis" (change)="onAxisChange(xAxisRef.value, yAxisRef.value)">
+                    <option disabled value="{{yAxis}}">Select Y Axis</option>
+                    <option *ngFor="let col of queryResponse.columns" value="{{col}}">{{ col }}</option>
+                  </select>
+                </div>
+              </div>
+              <br>
+              <div *ngIf="!showTable" class="alert alert-dark text-center" role="alert">
+                Run a query
+              </div>
+              <div *ngIf="invalidAxis" class="alert alert-dark text-center" role="alert"> 
+                Y-axis columns must be numeric
+              </div>
+              <app-table
+              *ngIf="queryResponse && chartType == 'table'"
+              [data]="queryResponse">
+            </app-table>
+            <fusioncharts
+              *ngIf="showChart"
+              class="chart"
+              width="700"
+              height="400" 
+              type="column2d"
+              [dataSource]="dataSource">
+              <img src="assets/images/refresh-icon.png" alt="refresh" class="refresh">
+            </fusioncharts> 
+            </div>
+          </div>
+        </div>
+
       </div>
   </div>
 </div>

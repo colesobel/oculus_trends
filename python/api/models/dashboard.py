@@ -1,5 +1,5 @@
 import json
-from api.models import database, base_model
+from api.models import database, base_model, utils
 
 
 class Dashboard(base_model.BaseModel):
@@ -15,7 +15,7 @@ class Dashboard(base_model.BaseModel):
         return {
             'id': self.id_,
             'name': self.name,
-            'account_id': self.account_id
+            'url_alias': utils.to_url_alias(self.name)
         }
 
     @classmethod
