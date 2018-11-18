@@ -1,6 +1,8 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router, NavigationStart, NavigationEnd } from '@angular/router';
 import { DashboardService } from '../../services/dashboard.service';
+import { ChartService } from '../../services/chart.service';
+import { Chart } from '../../models/chart.model'
 
 @Component({
   selector: 'app-dashboard',
@@ -9,12 +11,27 @@ import { DashboardService } from '../../services/dashboard.service';
 })
 export class DashboardComponent implements OnInit, OnDestroy {
   dashboardId: number
-  constructor(private activatedRoute: ActivatedRoute, private router: Router, private dashboardService: DashboardService) { }
+  noCharts: boolean = false
+  charts: Chart[]
+  constructor(private activatedRoute: ActivatedRoute, private router: Router, private dashboardService: DashboardService, private chartService: ChartService) { }
 
   ngOnInit() {
     this.dashboardId = +this.activatedRoute.snapshot.paramMap.get('id')
-    console.log(this.dashboardId)
     this.dashboardService.changeOnDashboard(true)
+    this.dashboardService.getCharts(this.dashboardId).subscribe(response => {
+      console.log('Success getting charts!')
+      console.log(response)
+      if (response.body['charts'].length > 0) {
+        let charts = response.body['charts']
+        this.charts = charts.map(this.chartService.toChartInterface)
+      } else {
+        this.noCharts = true
+      }
+    }, 
+    error => {
+      console.log('There was an error getting charts')
+      console.log(error)
+    })
   }
 
   ngOnDestroy() {

@@ -3,10 +3,6 @@ from inspect import getfullargspec
 import inflection
 
 
-
-
-
-
 class BaseModel(ABC):
     def __init__(self):
         self.table_name = inflection.underscore(self.__class__.__name__)

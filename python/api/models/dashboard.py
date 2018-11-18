@@ -1,5 +1,6 @@
 import json
-from api.models import database, base_model, utils
+from concurrent import futures
+from api.models import database, base_model, utils, chart
 
 
 class Dashboard(base_model.BaseModel):
@@ -59,3 +60,32 @@ class Dashboard(base_model.BaseModel):
             account_id=account_id
         )
         return result
+
+    @staticmethod
+    def get_all_charts(account_id, dashboard_id):
+        sql = """
+        SELECT c.id
+        FROM chart c
+        JOIN dashboard d ON c.dashboard_id = d.id
+        WHERE d.account_id = %s
+        AND d.id = %s
+        AND d.active = 1
+        AND d.deleted = 0
+        AND c.active = 1
+        AND c.deleted = 0
+        """
+        args = (account_id, dashboard_id)
+        results = database.sql_fetch_all(sql, args)
+        chart_ids = [r['id'] for r in results]
+        if not chart_ids:
+            return []
+
+        max_workers = len(chart_ids)
+        with futures.ThreadPoolExecutor(max_workers=max_workers) as executor:
+            results = executor.map(chart.Chart.find, chart_ids, timeout=20)
+            return [r for r in results]
+
+
+
+
+

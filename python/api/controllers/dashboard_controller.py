@@ -1,6 +1,7 @@
 import json
 from flask import Blueprint, request, abort, Response
-from api.models import auth, dashboard, utils, http_responses, user
+from api.models import auth, utils, http_responses, user
+from api.models.dashboard import Dashboard
 
 
 dashboard_controller = Blueprint('dashboard_controller', __name__)
@@ -12,11 +13,24 @@ def create():
     name = utils.fields_from_request(request, 'name')
     account_id = auth.get_field_from_jwt(request, 'account_id')
 
-    data = dashboard.Dashboard.post(*name, account_id)
-    dash = dashboard.Dashboard.create(data)
+    data = Dashboard.post(*name, account_id)
+    dash = Dashboard.create(data)
 
     return http_responses.created(dash.json())
 
 
+@dashboard_controller.route('/dashboard/<int:id_>/charts', methods=['GET'])
+@auth.authenticate
+def get_charts(id_):
+    print('The dashboard_id is: {}'.format(id_))
+    account_id = auth.get_field_from_jwt(request, 'account_id')
+    raw_charts = Dashboard.get_all_charts(account_id, id_)
+    charts = [c.json_full() for c in raw_charts]
+
+    return Response(json.dumps(
+        {
+            'charts': charts
+        }
+    ))
 
 

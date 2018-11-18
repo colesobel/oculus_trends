@@ -55,8 +55,10 @@ def serialize(o):
         return round(float(o), 5)
     elif isinstance(o, datetime):
         return str(o)
-    else:
+    elif isinstance(o, int):
         return o
+    else:
+        return str(o)
 
 
 def to_json(o):

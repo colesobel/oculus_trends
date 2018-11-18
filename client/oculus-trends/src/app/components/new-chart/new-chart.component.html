@@ -1,5 +1,6 @@
 <br>
 <div class="container-fluid">
+  <button (click)="logIt()">Log it all</button>
   <div class="row justify-content-md-center">
       <div class="col-lg-4">
         <div class="card">
@@ -9,7 +10,7 @@
             </div>
           </div>
           <div class="card-body" #formRef>
-            <form (ngSubmit)="onSubmit(chartForm)" #chartForm="ngForm">
+            <form #chartForm="ngForm">
               <div class="form-group">
                 <label for="name">Chart Name</label>
                 <input 
@@ -27,7 +28,7 @@
               </div>
               <div class="form-group">
                 <label for="dbcId">Database</label>
-                <select (change)="onChartSettingChange()" #dbcIdRef ngModel class="form-control" name="dbcId" id="database">
+                <select (change)="onChartSettingChange()" #dbcIdRef class="form-control" name="dbcId" id="database">
                   <option *ngFor="let dbc of dbcs" value="{{dbc.id}}">{{ dbc.name }}</option>
                 </select>
               </div>
@@ -37,10 +38,10 @@
               </div>
               <div class="row justify-content-between">
                 <div class="col-auto">
-                    <div class="btn btn-info" (click)="runQuery(dbcIdRef, queryRef)">Run Query</div>
+                    <button class="btn btn-info" (click)="runQuery(dbcIdRef, queryRef)">Run Query</button>
                 </div>
                 <div class="col-auto">
-                    <button [disabled]="(chartForm.valid && submitted) || (!submitted && chartForm.invalid)" class="btn btn-info">Save Chart</button>
+                    <button (click)="onSubmit()" [disabled]="!chartSavable" class="btn btn-info">Save Chart</button>
                 </div>
               </div>
             </form>
@@ -58,24 +59,24 @@
             <div class="container-fluid">
               <div class="row">
                 <label for="chart-type">Chart Type</label>
-                <select #chartTypeRef (change)="onChartTypeChange()" [disabled]="!showTable" [(ngModel)]="chartType" class="form-control" name="chart_type" id="chart-type">
+                <select #chartTypeRef [disabled]="!showTable" [(ngModel)]="chartTypeVal" class="form-control" name="chart_type" id="chart-type">
                   <option value="table">Table</option>
                   <option value="column">Column</option>
                 </select>
               </div>
-              <div *ngIf="showAxesSelects.includes(chartType)" class="row justify-content-between">
+              <div *ngIf="showAxesSelects.includes(chartTypeVal)" class="row justify-content-between">
                 <div class="col-lg-6">
                   <label for="x-axis">X Axis</label>
-                  <select (change)="onChartSettingChange()" #xAxisRef class="form-control" name="x-axis" id="x-axis" (change)="onAxisChange(xAxisRef.value, yAxisRef.value)">
+                  <select (change)="onChartSettingChange()" #xAxisRef class="form-control" name="x-axis" id="x-axis">
                     <option disabled value="{{xAxis}}">Select X Axis</option>
-                    <option *ngFor="let col of queryResponse.columns" value="{{col}}">{{ col }}</option>
+                    <option [selected]="xAxisVal == col" *ngFor="let col of queryResponse.columns" value="{{col}}">{{ col }}</option>
                   </select>
                 </div>
                 <div class="col-lg-6">
                   <label for="y-axis">Y Axis</label>
-                  <select (change)="onChartSettingChange()" #yAxisRef class="form-control" name="y-axis" id="y-axis" (change)="onAxisChange(xAxisRef.value, yAxisRef.value)">
+                  <select (change)="onChartSettingChange()" #yAxisRef class="form-control" name="y-axis" id="y-axis">
                     <option disabled value="{{yAxis}}">Select Y Axis</option>
-                    <option *ngFor="let col of queryResponse.columns" value="{{col}}">{{ col }}</option>
+                    <option [selected]="yAxisVal == col" *ngFor="let col of queryResponse.columns" value="{{col}}">{{ col }}</option>
                   </select>
                 </div>
               </div>
@@ -87,7 +88,7 @@
                 Y-axis columns must be numeric
               </div>
               <app-table
-              *ngIf="queryResponse && chartType == 'table'"
+              *ngIf="queryResponse && chartTypeVal == 'table'"
               [data]="queryResponse">
             </app-table>
             <fusioncharts

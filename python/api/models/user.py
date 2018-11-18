@@ -1,3 +1,4 @@
+import json
 from concurrent import futures
 from api.models.base_model import BaseModel
 from api.models import sql, auth, database, utils, database_connection
@@ -36,7 +37,15 @@ class User(BaseModel):
         return cls(**result)
 
     @classmethod
-    def create(cls, data: dict):
+    def create(cls, account_id, data):
+        data = json.loads(data)
+        insert = dict(
+            account_id=account_id, 
+            email=data.get('email'), 
+            password=data.get('password'), 
+            first_name=data.get('firstName'),
+            last_name=data.get('lastName')
+        )
         sql = """
         INSERT INTO user (account_id, email, password, uuid, first_name, last_name, created_on)
         VALUES ( %s, %s, %s, UUID(), %s, %s, NOW())
@@ -44,47 +53,15 @@ class User(BaseModel):
         id_ = database.sql_insert(
             sql,
             (
-                data.get('account_id'),
-                data.get('email'),
-                data.get('password'),
-                data.get('first_name'),
-                data.get('last_name')
+                insert['account_id'],
+                insert['email'],
+                insert['password'],
+                insert['first_name'],
+                insert['last_name']
             )
           )
 
         return cls.find(id_)
-
-    @staticmethod
-    def post(accountId, email, password, firstName, lastName):
-        """
-        should return a dict with all the fields needed to create a record in the "create" method
-        """
-        result = dict(
-            account_id=accountId,
-            email=email,
-            password=auth.hash_pw(password),
-            first_name=firstName,
-            last_name=lastName
-        )
-
-        return result
-
-
-    # @staticmethod
-    # def find_by_email(email):
-    #     sql = """
-    #     SELECT u.id as user_id,
-    #     u.email,
-    #     u.password,
-    #     a.id as account_id,
-    #     u.role_id
-    #     FROM user u
-    #     JOIN account a ON u.account_id = a.id
-    #     WHERE email = %s
-    #     """
-    #     args = (email, )
-    #
-    #     return database.sql_fetch_one(sql, args)
 
     @classmethod
     def find_by_email(cls, email):
@@ -130,12 +107,13 @@ class User(BaseModel):
 
         dashboards = []
         for d in result:
-            db = {
-                'id': d['dashboard_id'],
-                'name': d['dashboard_name'],
-                'url_alias': utils.to_url_alias(d['dashboard_name'])
-            }
-            dashboards.append(db)
+            if d.get('dashboard_id'):
+                db = {
+                    'id': d['dashboard_id'],
+                    'name': d['dashboard_name'],
+                    'url_alias': utils.to_url_alias(d['dashboard_name'])
+                }
+                dashboards.append(db)
 
         dbcs = dbcs.result()
 

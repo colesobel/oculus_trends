@@ -28,7 +28,14 @@ export class SignupComponent implements OnInit {
       response => {
         console.log('Success!')
         console.log(response)
-        this.router.navigate(['app', 'settings'])
+        if (response.headers.has('jwt')) {
+          let token = response.headers.get('jwt')
+          this.authService.login(token, response.body['account_info'])
+          this.router.navigate(['app', 'account'])
+        } else {
+          console.log('no jwt present. Add error handling')
+        }
+
       }, 
       error => {
         console.log(error)

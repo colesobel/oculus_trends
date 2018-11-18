@@ -78,7 +78,6 @@ class DatabaseConnection(base_model.BaseModel):
         """
         for SELECT queries only
         """
-        connection = self.connect_to_database()
         if self.database_server == 'mysql':
             return self.mysql_fetch_all(query)
         elif self.database_server in ['redshift', 'postgres']:
@@ -189,7 +188,7 @@ class DatabaseConnection(base_model.BaseModel):
 
         database.sql_insert(key_sql, key_args)
 
-        return cls.find(id_, data['account_id'])
+        return cls.find(id_)
 
 
     @classmethod
@@ -231,7 +230,7 @@ class DatabaseConnection(base_model.BaseModel):
         return connection_info
 
     @classmethod
-    def find(cls, id_, account_id):
+    def find(cls, id_):
         """
         Creates an instance of DatabaseConnection from database
         """
@@ -251,9 +250,8 @@ class DatabaseConnection(base_model.BaseModel):
         FROM dbc
         JOIN dbc_key dbck ON dbc.id = dbck.dbc_id
         WHERE dbc.id = %s
-        and account_id = %s
         """
-        dbc = database.sql_fetch_one(query, (id_, account_id))
+        dbc = database.sql_fetch_one(query, (id_,))
         if not dbc:
             return None
         a_key, iv, f_key = dbc['a_key'], dbc['iv'], dbc['f_key']
@@ -319,7 +317,7 @@ class DatabaseConnection(base_model.BaseModel):
 
     @staticmethod
     def delete(id_, account_id):
-        sql= """
+        sql = """
         UPDATE dbc
         JOIN account a ON dbc.account_id = a.id
         SET dbc.deleted = %s
@@ -343,13 +341,33 @@ class DatabaseConnection(base_model.BaseModel):
 # dict_cursor = connection.cursor(cursor_factory=RealDictCursor)
 # dict_cursor.execute(sql)
 # result = dict_cursor.fetchall()
-
+#
 # connection_test = DatabaseConnection.test_connection(dbcon)
 # if connection_test:
 #     thecon = DatabaseConnection.create(dbcon)
 #     print(thecon)
 # else:
 #     print('Failed connection test')
-
+#
 #
 # result = dbcon.test_connection()
+
+
+# query = """
+# select day, sum(revenue) as revenue
+# from rollup_offer_link
+# where day >= current_date - interval 5 day
+# group by day
+# order by revenue desc
+# """
+# db = DatabaseConnection.find(3, 48)
+#
+# results = db.run_query(query)
+#
+# json = utils.to_json({
+#         'success': True,
+#         'status': 200,
+#         'results': results
+#     })
+#
+# print(json)

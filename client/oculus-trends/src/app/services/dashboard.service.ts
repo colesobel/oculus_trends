@@ -30,4 +30,8 @@ export class DashboardService {
 
     return this.http.post(this.globalService.apiUrl + 'chart-test', {dbcId: dbcId, query: query}, {observe: 'response'})
   }
+
+  getCharts(dashboardId: number) {
+    return this.http.get(this.globalService.apiUrl + `dashboard/${dashboardId}/charts`, {observe: 'response'})
+  }
 }

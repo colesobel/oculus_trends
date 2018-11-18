@@ -1,4 +1,6 @@
-import { Component, OnInit, ElementRef, Renderer2, ViewChild, OnDestroy } from '@angular/core';
+import { Component, OnInit, ElementRef, Renderer2, ViewChild, OnDestroy, Input } from '@angular/core';
+import { Chart } from '../../models/chart.model';
+import { ChartService } from '../../services/chart.service';
 
 @Component({
   selector: 'app-chart',
@@ -9,6 +11,7 @@ export class ChartComponent implements OnInit, OnDestroy {
   dataSource: object
   @ViewChild('containerRef') containerRef: ElementRef
   @ViewChild('resizeRef') resizeRef: ElementRef
+  @Input() chart: Chart
   x: number
   y: number
   height: number
@@ -16,9 +19,19 @@ export class ChartComponent implements OnInit, OnDestroy {
   psx: number
   psy: number
   globalEventListenerRef: (event: MouseEvent) => void
-  constructor(private element: ElementRef, private renderer: Renderer2) { }
+  constructor(private element: ElementRef, private renderer: Renderer2, private chartService: ChartService) { }
 
   ngOnInit() {
+    console.log('Running the query')
+    this.chartService.runChart(this.chart).then(response => {
+      console.log('Successful Query Response!')
+      console.log(response)
+      this.dataSource = response
+    }, 
+    error => {
+      console.log('The query respoonse had an error')
+      console.log(error)
+    })
     this.renderer.setStyle(this.containerRef.nativeElement, 'width', 700 + 'px')
     this.renderer.setStyle(this.containerRef.nativeElement, 'height', 400 + 'px')
     this.renderer.setStyle(this.containerRef.nativeElement, 'left', 0 + 'px')
@@ -99,42 +112,42 @@ export class ChartComponent implements OnInit, OnDestroy {
     })
 
 
-    this.dataSource = {
-      "chart": {
-          "caption": "Countries With Most Oil Reserves [2017-18]",
-          "subCaption": "In MMbbl = One Million barrels",
-          "xAxisName": "Country",
-          "yAxisName": "Reserves (MMbbl)",
-          "numberSuffix": "K",
-          "theme": "fusion",
-      },
-      "data": [{
-          "label": "Venezuela",
-          "value": "290"
-      }, {
-          "label": "Saudi",
-          "value": "260"
-      }, {
-          "label": "Canada",
-          "value": "180"
-      }, {
-          "label": "Iran",
-          "value": "140"
-      }, {
-          "label": "Russia",
-          "value": "115"
-      }, {
-          "label": "UAE",
-          "value": "100"
-      }, {
-          "label": "US",
-          "value": "30"
-      }, {
-          "label": "China",
-          "value": "30"
-      }
-    ]
-  }
+  //   this.dataSource = {
+  //     "chart": {
+  //         "caption": "Countries With Most Oil Reserves [2017-18]",
+  //         "subCaption": "In MMbbl = One Million barrels",
+  //         "xAxisName": "Country",
+  //         "yAxisName": "Reserves (MMbbl)",
+  //         "numberSuffix": "K",
+  //         "theme": "fusion",
+  //     },
+  //     "data": [{
+  //         "label": "Venezuela",
+  //         "value": "290"
+  //     }, {
+  //         "label": "Saudi",
+  //         "value": "260"
+  //     }, {
+  //         "label": "Canada",
+  //         "value": "180"
+  //     }, {
+  //         "label": "Iran",
+  //         "value": "140"
+  //     }, {
+  //         "label": "Russia",
+  //         "value": "115"
+  //     }, {
+  //         "label": "UAE",
+  //         "value": "100"
+  //     }, {
+  //         "label": "US",
+  //         "value": "30"
+  //     }, {
+  //         "label": "China",
+  //         "value": "30"
+  //     }
+  //   ]
+  // }
   }
 
   ngOnDestroy() {

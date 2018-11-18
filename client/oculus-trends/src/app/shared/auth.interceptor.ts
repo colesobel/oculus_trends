@@ -31,6 +31,7 @@ export class AuthInterceptor implements HttpInterceptor {
                 if (error instanceof HttpErrorResponse) {
                     console.log(error)
                     if (error.status === 401) {
+                        console.log('Logging out! Got 401')
                         this.authService.logOut()
                     } else if (error.status === 403) {
                         alert('You are not authorized to perform this action.')

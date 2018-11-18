@@ -29,17 +29,8 @@ def login():
 
 @login_controller.route('/signup', methods=['POST'])
 def signup():
-    data = json.loads(request.data)
-    account_data = account.Account.post(accountName=data.get('accountName'))
-    acc = account.Account.create(account_data)
-    user_data = user.User.post(
-        accountId=acc.id_,
-        email=data.get('email'),
-        password=data.get('password'),
-        firstName=data.get('firstName'),
-        lastName=data.get('lastName')
-    )
-    usr = user.User.create(user_data)
+    acc = account.Account.create(request.data)
+    usr = user.User.create(acc.id_, request.data)
 
     jwt = auth.encode_jwt(
         account_id=usr.account_id,
@@ -48,8 +39,13 @@ def signup():
         role_id=usr.role_id
     )
 
+    account_info = user.User.get_startup_info(usr.email)
+    data = {
+        'account_info': account_info,
+        'record': acc.json()
+    }
     resp = make_response()
-    resp.data = json.dumps(account_data)
+    resp.data = json.dumps(data)
     resp.mimetype = 'application/json'
     resp.status_code = 201
     resp.headers['jwt'] = jwt

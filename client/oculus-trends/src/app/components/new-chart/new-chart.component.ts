@@ -26,24 +26,22 @@ export class NewChartComponent implements OnInit {
   chartNameVal: String
   dbcIdVal: number
   queryVal: string
-  chartTypeVal: string
+  chartTypeVal: string = 'table'
   xAxisVal: string
   yAxisVal: string
-
+  
   dashboardId: number
   dbcs: DatabaseConnectionInterface[]
   submitted: boolean = false
   queryTested: boolean = false
   showTable: boolean = false
   queryResponse: QueryResponse
-  chartType: string = 'table'
-  // xAxis: string = null
-  // yAxis: string = null
   showAxesSelects = ['column']
   invalidAxis: boolean = false
   showChart = false
   chartData: ChartData
   dataSource: object
+  chartSavable: boolean = false
 
   constructor(private activatedRoute: ActivatedRoute, 
     private authService: AuthService, 
@@ -57,7 +55,19 @@ export class NewChartComponent implements OnInit {
     this.dbcs = this.authService.accountOverview.dbcs  
     let formRefHeight = getComputedStyle(this.formRef.nativeElement).height
     this.renderer.setStyle(this.chartPreviewRef.nativeElement, 'min-height', formRefHeight)
-    console.log(typeof this.dbcIdRef.nativeElement.value)
+  }
+
+  resetAxes() {
+    console.log('resetting axes')
+    if (this.queryResponse && this.xAxisVal && this.yAxisVal) {
+      if (!this.queryResponse.columns.includes(this.xAxisVal)) {
+        this.xAxisVal = undefined
+      }
+      if (!this.queryResponse.columns.includes(this.yAxisVal)) {
+        this.yAxisVal = undefined
+      }
+    }
+    
   }
 
   runQuery(dbcIdRef, queryRef) {
@@ -66,30 +76,16 @@ export class NewChartComponent implements OnInit {
       console.log(response.body['results'])
       this.queryResponse = this.chartService.toQueryResponse(response.body['results'])
       this.showTable = true
+      this.chartSavable = true
+
+      // Maybe remove??
+      this.chartTypeVal = 'table'
+      this.showChart = false
+      this.resetAxes()
     },  
     error => {
       console.log('There was an error testing the query')
     })
-  }
-
-  onChartTypeChange() {
-    console.log(`Chart type is now ${this.chartType}`)
-    this.onChartSettingChange()
-    this.toChartData()
-  }
-
-  toChartData() {
-    console.log('Converting to chart data')
-    let data = {
-      queryResponse: this.queryResponse, 
-      xAxis: null, 
-      yAxis: null
-    }
-    console.log(data)
-  }
-
-  onAxisChange(x, y) {
-    console.log(`${x}, ${y}`)
   }
 
   onChartSettingChange() {
@@ -105,10 +101,10 @@ export class NewChartComponent implements OnInit {
     if (this.chartTypeRef.nativeElement.value) {
       this.chartTypeVal = this.chartTypeRef.nativeElement.value
     }
-    if (this.xAxisRef && this.xAxisRef.nativeElement.value) {
+    if (this.xAxisRef && this.xAxisRef.nativeElement.value != 'Select x Axis') {
       this.xAxisVal = this.xAxisRef.nativeElement.value
     }
-    if (this.yAxisRef && this.yAxisRef.nativeElement.value) {
+    if (this.yAxisRef && this.yAxisRef.nativeElement.value != 'Select y Axis') {
       this.yAxisVal = this.yAxisRef.nativeElement.value
     }
 
@@ -117,8 +113,13 @@ export class NewChartComponent implements OnInit {
       let transformMethod = this.chartService.chartTypeDataMethod(this.chartTypeVal)
       this.dataSource = transformMethod(this.chartData)
       this.showChart = true
+      this.chartSavable = true
+    } else if (this.chartNameVal && this.dbcIdVal && this.queryVal && (this.chartTypeVal == 'table') && this.xAxisVal && this.yAxisVal && this.queryResponse) {
+      this.showChart = false
+      this.chartSavable = true
     } else {
       this.showChart = false
+      this.chartSavable = false
     }
     
   }
@@ -131,19 +132,37 @@ export class NewChartComponent implements OnInit {
     return allNumeric
   }
 
-  // onSubmit(form: NgForm) {
-  //   // this.submitted = true
-  //   if (!this.queryTested) {
-  //     this.dashboardService.testQuery(this.dashboardId, form.value).subscribe(response => {
-  //       this.queryTested = true
-  //       console.log('success')
-        
-  //     },
-  //     error => {
-  //       console.log('There was an error when running the query. Please verify the query syntax.')
-  //     })
-  //   }
-  //   console.log(form.value)
-  // }
+  onSubmit() {
+    console.log('Saving the chart!!')
+    let saveObj = {
+      dashboardId: this.dashboardId,
+      name: this.chartNameVal,
+      dbcId: this.dbcIdVal, 
+      query: this.queryVal, 
+      chartTypeId: this.chartService.chartTypeToId(this.chartTypeVal), 
+      xAxis: this.xAxisVal, 
+      yAxis: this.yAxisVal
+    }
+
+    this.chartService.newChartSave(saveObj).subscribe(response => {
+      console.log('Chart Save Success!')
+      console.log(response)
+    }, 
+    error => {
+      console.log('There was an error')
+      console.log(error)
+    })
+
+
+  }
+
+  logIt() {
+    console.log(this.chartNameVal)
+    console.log(this.dbcIdVal)
+    console.log(this.queryVal)
+    console.log(this.chartTypeVal)
+    console.log(this.xAxisVal)
+    console.log(this.yAxisVal)
+  }
 
 }
