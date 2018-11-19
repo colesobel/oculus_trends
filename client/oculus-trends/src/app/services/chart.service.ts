@@ -118,4 +118,41 @@ export class ChartService {
     })
   }
 
+  onSizePlacementChange(chart: Chart, x: number, y: number, height: number, width: number, screenWidth: number, screenHeight: number): Promise<Chart> {
+    let xPercentage = +(x / screenWidth).toFixed(3)
+    let yPercentage = +(y / screenHeight).toFixed(3)
+    let widthPercentage = +(width / screenWidth).toFixed(3)
+    let heightPercentage = +(height / screenHeight).toFixed(3)
+
+    console.log(`xP: ${xPercentage}, yP: ${yPercentage}, widthP: ${widthPercentage}, heightP: ${heightPercentage}`)
+    console.log(chart)
+
+    return new Promise((resolve, reject) => {
+      if (chart.x != xPercentage || chart.y != yPercentage || chart.height != heightPercentage || chart.width != widthPercentage) {
+        console.log(`Save the specs for chart_id: ${chart.id}!`)
+        let body = {
+          x: xPercentage,
+          y: yPercentage, 
+          height: heightPercentage, 
+          width: widthPercentage
+        }
+        this.http.put(this.globalService.apiUrl + `chart/${chart.id}/spec`, body, {observe: 'response'}).subscribe(response => {
+          console.log('Successfuly spec save!')
+          let chartResponse = response.body['result']
+          resolve(chartResponse)
+        }, 
+        error => {
+          console.log('Error in spec save')
+          console.log(error)
+          reject(chart)
+        })
+      } else {
+        console.log('Chart position has not changed')
+        reject(chart)
+      }
+    })
+
+    
+  }
+
 }

@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild, ElementRef, Renderer2 } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { DatabaseConnectionInterface } from '../../models/account-overview.model';
 import { QueryResponse, ChartData } from '../../models/query-response.model'
@@ -31,6 +31,7 @@ export class NewChartComponent implements OnInit {
   yAxisVal: string
   
   dashboardId: number
+  dashboardNameAlias: string
   dbcs: DatabaseConnectionInterface[]
   submitted: boolean = false
   queryTested: boolean = false
@@ -47,11 +48,13 @@ export class NewChartComponent implements OnInit {
     private authService: AuthService, 
     private dashboardService: DashboardService, 
     private renderer: Renderer2, 
-    private chartService: ChartService
+    private chartService: ChartService,
+    private router: Router
   ) { }
 
   ngOnInit() {
     this.dashboardId = +this.activatedRoute.snapshot.paramMap.get('id')
+    this.dashboardNameAlias = this.activatedRoute.snapshot.paramMap.get('dashboardName')
     this.dbcs = this.authService.accountOverview.dbcs  
     let formRefHeight = getComputedStyle(this.formRef.nativeElement).height
     this.renderer.setStyle(this.chartPreviewRef.nativeElement, 'min-height', formRefHeight)
@@ -147,6 +150,7 @@ export class NewChartComponent implements OnInit {
     this.chartService.newChartSave(saveObj).subscribe(response => {
       console.log('Chart Save Success!')
       console.log(response)
+      this.router.navigate(['app', 'dashboard', this.dashboardId, this.dashboardNameAlias])
     }, 
     error => {
       console.log('There was an error')

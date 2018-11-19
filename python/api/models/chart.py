@@ -1,4 +1,5 @@
 import json
+import inflection
 from api.models import base_model, utils, database, database_connection
 
 
@@ -66,7 +67,6 @@ class Chart(base_model.BaseModel):
         result = dbc.run_query(self.query)
         return result
 
-
     @classmethod
     def find(cls, id_):
         sql = """
@@ -116,7 +116,7 @@ class Chart(base_model.BaseModel):
         )
         sql = """
         INSERT INTO chart (uuid, name, chart_type_id, dashboard_id, x, y, height, width, query, x_axis, y_axis, options, dbc_id, created_on)
-        VALUES (UUID(), %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, NOW())
+        VALUES (UUID(), %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, NOW())
         """
         id_ = database.sql_insert(
             sql, 
@@ -136,3 +136,24 @@ class Chart(base_model.BaseModel):
             )
         )
         return cls.find(id_)
+
+    def update(self, params):
+        valid_params = {inflection.underscore(k): v for k, v in params.items()
+            if inflection.underscore(k) in self.class_parameters}
+
+        if not valid_params:
+            return
+
+        updates = ', '.join(['{} = %s'.format(k) for k in valid_params])
+        sql = """
+        UPDATE chart
+        SET {}
+        WHERE id = %s
+        """.format(updates)
+        args = tuple([v for k, v in valid_params.items()] + [self.id_])
+        database.sql_execute(sql, args)
+
+        return
+
+
+

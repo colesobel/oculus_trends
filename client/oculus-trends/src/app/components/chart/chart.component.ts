@@ -12,6 +12,8 @@ export class ChartComponent implements OnInit, OnDestroy {
   @ViewChild('containerRef') containerRef: ElementRef
   @ViewChild('resizeRef') resizeRef: ElementRef
   @Input() chart: Chart
+  screenWidth: number
+  screenHeight: number
   x: number
   y: number
   height: number
@@ -22,7 +24,6 @@ export class ChartComponent implements OnInit, OnDestroy {
   constructor(private element: ElementRef, private renderer: Renderer2, private chartService: ChartService) { }
 
   ngOnInit() {
-    console.log('Running the query')
     this.chartService.runChart(this.chart).then(response => {
       console.log('Successful Query Response!')
       console.log(response)
@@ -32,10 +33,16 @@ export class ChartComponent implements OnInit, OnDestroy {
       console.log('The query respoonse had an error')
       console.log(error)
     })
-    this.renderer.setStyle(this.containerRef.nativeElement, 'width', 700 + 'px')
-    this.renderer.setStyle(this.containerRef.nativeElement, 'height', 400 + 'px')
-    this.renderer.setStyle(this.containerRef.nativeElement, 'left', 0 + 'px')
-    this.renderer.setStyle(this.containerRef.nativeElement, 'top', 0 + 'px')
+    this.screenWidth = window.outerWidth
+    this.screenHeight = window.outerHeight
+    
+    this.convertChartSpecs()
+
+    this.renderer.setStyle(this.containerRef.nativeElement, 'width', this.width + 'px')
+    this.renderer.setStyle(this.containerRef.nativeElement, 'height', this.height + 'px')
+    this.renderer.setStyle(this.containerRef.nativeElement, 'left', this.x + 'px')
+    this.renderer.setStyle(this.containerRef.nativeElement, 'top', this.y + 'px')
+    console.log(`x: ${this.x}, y: ${this.y}, width: ${this.width}, height: ${this.height}`)
 
     let styles = getComputedStyle(this.containerRef.nativeElement)
 
@@ -72,10 +79,14 @@ export class ChartComponent implements OnInit, OnDestroy {
     }
 
     let stopAll = (event: MouseEvent) => {
-      console.log('removing all event listener')
       event.preventDefault()
       document.removeEventListener('mousemove', drag)
       document.removeEventListener('mousemove', resize)
+      this.chartService.onSizePlacementChange(this.chart, this.x, this.y, this.height, this.width, this.screenWidth, this.screenHeight).then(response => {
+        this.chart = response
+      }).catch(e => {
+        // Chart position did not change. No action needed
+      })
     }
     this.globalEventListenerRef = stopAll
 
@@ -89,11 +100,6 @@ export class ChartComponent implements OnInit, OnDestroy {
   
       if (target.tagName !== 'rect') {
         return
-      }
-
-  
-      let stopDrag = (event: MouseEvent) => {
-        document.removeEventListener('mousemove', drag)
       }
   
       document.addEventListener('mousemove', drag)
@@ -111,43 +117,6 @@ export class ChartComponent implements OnInit, OnDestroy {
       document.addEventListener('mousemove', resize)
     })
 
-
-  //   this.dataSource = {
-  //     "chart": {
-  //         "caption": "Countries With Most Oil Reserves [2017-18]",
-  //         "subCaption": "In MMbbl = One Million barrels",
-  //         "xAxisName": "Country",
-  //         "yAxisName": "Reserves (MMbbl)",
-  //         "numberSuffix": "K",
-  //         "theme": "fusion",
-  //     },
-  //     "data": [{
-  //         "label": "Venezuela",
-  //         "value": "290"
-  //     }, {
-  //         "label": "Saudi",
-  //         "value": "260"
-  //     }, {
-  //         "label": "Canada",
-  //         "value": "180"
-  //     }, {
-  //         "label": "Iran",
-  //         "value": "140"
-  //     }, {
-  //         "label": "Russia",
-  //         "value": "115"
-  //     }, {
-  //         "label": "UAE",
-  //         "value": "100"
-  //     }, {
-  //         "label": "US",
-  //         "value": "30"
-  //     }, {
-  //         "label": "China",
-  //         "value": "30"
-  //     }
-  //   ]
-  // }
   }
 
   ngOnDestroy() {
@@ -156,6 +125,15 @@ export class ChartComponent implements OnInit, OnDestroy {
 
   onRefresh() {
     console.log('Refreshing chart!')
+  }
+
+  convertChartSpecs() {
+    this.x = (isNaN(this.chart.x)) ? 0.0 : Math.round(this.chart.x * this.screenWidth)
+    this.y = (isNaN(this.chart.y)) ? 0.0 : Math.round(this.chart.y * this.screenHeight)
+    this.width = (isNaN(this.chart.width) || this.chart.width == 0) ? 700 : Math.round(this.chart.width * this.screenWidth)
+    this.height = (isNaN(this.chart.height) || this.chart.height == 0) ? 400 : Math.round(this.chart.height * this.screenHeight)
+    console.log(`x: ${this.x}, y: ${this.y}, width: ${this.width}, height: ${this.height}`)
+    console.log(this.chart.height == 0)
   }
 
 }

@@ -27,7 +27,7 @@ def get_charts(id_):
     raw_charts = Dashboard.get_all_charts(account_id, id_)
     charts = [c.json_full() for c in raw_charts]
 
-    return Response(json.dumps(
+    return Response(utils.to_json(
         {
             'charts': charts
         }
