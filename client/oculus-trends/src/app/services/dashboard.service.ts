@@ -14,6 +14,7 @@ export class DashboardService {
   onDashboard: boolean = false
   onDashboardChange = new Subject<boolean>()
   onWindowChange = new Subject<void>()
+  onGlobalRefresh = new Subject<void>()
 
   constructor(private http: HttpClient, private globalService: GlobalService) { }
 
@@ -39,4 +40,10 @@ export class DashboardService {
   notifyWindowChange() {
     this.onWindowChange.next()
   }
+
+  notifyGlobalRefresh() {
+    this.onGlobalRefresh.next()
+  }
+
+  
 }

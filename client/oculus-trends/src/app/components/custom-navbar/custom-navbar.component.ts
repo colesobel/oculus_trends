@@ -36,6 +36,10 @@ export class CustomNavbarComponent implements OnInit, OnDestroy{
     this.router.navigate([this.router.url, 'new-chart'])
   }
 
+  onRefreshAll() {
+    this.dashboardService.notifyGlobalRefresh()
+  }
+
   ngOnDestroy() {
     this.onDashboardSubscription.unsubscribe()
   }

@@ -24,6 +24,7 @@ export class ChartComponent implements OnInit, OnDestroy {
   psy: number
   globalEventListenerRef: (event: MouseEvent) => void
   windowSubscription: Subscription
+  globalRefreshSubscription: Subscription
 
   constructor(private element: ElementRef, private renderer: Renderer2, private chartService: ChartService, private dashboardService: DashboardService) { }
 
@@ -42,18 +43,7 @@ export class ChartComponent implements OnInit, OnDestroy {
     
     this.convertChartSpecs()
 
-    // this.renderer.setStyle(this.containerRef.nativeElement, 'width', this.width + 'px')
-    // this.renderer.setStyle(this.containerRef.nativeElement, 'height', this.height + 'px')
-    // this.renderer.setStyle(this.containerRef.nativeElement, 'left', this.x + 'px')
-    // this.renderer.setStyle(this.containerRef.nativeElement, 'top', this.y + 'px')
-    console.log(`x: ${this.x}, y: ${this.y}, width: ${this.width}, height: ${this.height}`)
-
     let styles = getComputedStyle(this.containerRef.nativeElement)
-
-    this.x = +styles.top.replace('px', '')
-    this.y = +styles.left.replace('px', '')
-    this.height = +styles.height.replace('px', '')
-    this.width = +styles.width.replace('px', '')
 
     let drag = (event: MouseEvent) => {
       let xDiff = event.screenX - this.psx
@@ -88,6 +78,7 @@ export class ChartComponent implements OnInit, OnDestroy {
       document.removeEventListener('mousemove', resize)
       this.chartService.onSizePlacementChange(this.chart, this.x, this.y, this.height, this.width, this.screenWidth, this.screenHeight).then(response => {
         this.chart = response
+        this.convertChartSpecs()
       }).catch(e => {
         // Chart position did not change. No action needed
       })
@@ -122,22 +113,24 @@ export class ChartComponent implements OnInit, OnDestroy {
     })
 
     this.windowSubscription = this.dashboardService.onWindowChange.subscribe(() => {
-      console.log('Weve subscribed to window resize events!!')
-      console.log(window.outerWidth)
-      console.log(window.outerHeight)
       this.screenWidth = window.outerWidth
       this.screenHeight = window.outerHeight
       this.convertChartSpecs()
+    })
+
+    this.globalRefreshSubscription = this.dashboardService.onGlobalRefresh.subscribe(() => {
+      this.onRefresh()
     })
   }
 
   ngOnDestroy() {
     document.removeEventListener('mouseup', this.globalEventListenerRef)
     this.windowSubscription.unsubscribe()
+    this.globalRefreshSubscription.unsubscribe()
   }
 
   onRefresh() {
-    console.log('Refreshing chart!')
+    console.log(`Rereshing chart: ${this.chart.id}`)
   }
 
   convertChartSpecs() {

@@ -8,6 +8,7 @@
       <ul class="navbar-nav mr-auto"></ul>
       <ul class="navbar-nav navbar-right">
         <button *ngIf="onDashboard" class="btn btn-outline-info" (click)="onNewChart()">New Chart &#x2b;</button>
+        <button *ngIf="onDashboard" class="btn btn-outline-info" (click)="onRefreshAll()">Refresh All Charts</button>
         <li routerLink="/app/dashboards" class="btn btn-outline-info my-2 my-sm-0">Dashboards</li>
         <li class="nav-item dropdown clickable">
           <button 
