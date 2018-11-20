@@ -13,6 +13,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   dashboardId: number
   noCharts: boolean = false
   charts: Chart[]
+  resizeListener: (event: MouseEvent) => void
   constructor(private activatedRoute: ActivatedRoute, private router: Router, private dashboardService: DashboardService, private chartService: ChartService) { }
 
   ngOnInit() {
@@ -31,11 +32,16 @@ export class DashboardComponent implements OnInit, OnDestroy {
     error => {
       console.log('There was an error getting charts')
       console.log(error)
-    })
+    })  
+    this.resizeListener = () => {
+      this.dashboardService.notifyWindowChange()
+    }
+    window.addEventListener('resize', this.resizeListener)
   }
 
   ngOnDestroy() {
     this.dashboardService.changeOnDashboard(false)
+    window.removeEventListener('rsize', this.resizeListener)
   }
 
 }

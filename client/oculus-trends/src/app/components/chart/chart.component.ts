@@ -1,6 +1,8 @@
 import { Component, OnInit, ElementRef, Renderer2, ViewChild, OnDestroy, Input } from '@angular/core';
 import { Chart } from '../../models/chart.model';
 import { ChartService } from '../../services/chart.service';
+import { DashboardService } from '../../services/dashboard.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-chart',
@@ -21,7 +23,9 @@ export class ChartComponent implements OnInit, OnDestroy {
   psx: number
   psy: number
   globalEventListenerRef: (event: MouseEvent) => void
-  constructor(private element: ElementRef, private renderer: Renderer2, private chartService: ChartService) { }
+  windowSubscription: Subscription
+
+  constructor(private element: ElementRef, private renderer: Renderer2, private chartService: ChartService, private dashboardService: DashboardService) { }
 
   ngOnInit() {
     this.chartService.runChart(this.chart).then(response => {
@@ -38,10 +42,10 @@ export class ChartComponent implements OnInit, OnDestroy {
     
     this.convertChartSpecs()
 
-    this.renderer.setStyle(this.containerRef.nativeElement, 'width', this.width + 'px')
-    this.renderer.setStyle(this.containerRef.nativeElement, 'height', this.height + 'px')
-    this.renderer.setStyle(this.containerRef.nativeElement, 'left', this.x + 'px')
-    this.renderer.setStyle(this.containerRef.nativeElement, 'top', this.y + 'px')
+    // this.renderer.setStyle(this.containerRef.nativeElement, 'width', this.width + 'px')
+    // this.renderer.setStyle(this.containerRef.nativeElement, 'height', this.height + 'px')
+    // this.renderer.setStyle(this.containerRef.nativeElement, 'left', this.x + 'px')
+    // this.renderer.setStyle(this.containerRef.nativeElement, 'top', this.y + 'px')
     console.log(`x: ${this.x}, y: ${this.y}, width: ${this.width}, height: ${this.height}`)
 
     let styles = getComputedStyle(this.containerRef.nativeElement)
@@ -117,10 +121,19 @@ export class ChartComponent implements OnInit, OnDestroy {
       document.addEventListener('mousemove', resize)
     })
 
+    this.windowSubscription = this.dashboardService.onWindowChange.subscribe(() => {
+      console.log('Weve subscribed to window resize events!!')
+      console.log(window.outerWidth)
+      console.log(window.outerHeight)
+      this.screenWidth = window.outerWidth
+      this.screenHeight = window.outerHeight
+      this.convertChartSpecs()
+    })
   }
 
   ngOnDestroy() {
     document.removeEventListener('mouseup', this.globalEventListenerRef)
+    this.windowSubscription.unsubscribe()
   }
 
   onRefresh() {
@@ -132,8 +145,12 @@ export class ChartComponent implements OnInit, OnDestroy {
     this.y = (isNaN(this.chart.y)) ? 0.0 : Math.round(this.chart.y * this.screenHeight)
     this.width = (isNaN(this.chart.width) || this.chart.width == 0) ? 700 : Math.round(this.chart.width * this.screenWidth)
     this.height = (isNaN(this.chart.height) || this.chart.height == 0) ? 400 : Math.round(this.chart.height * this.screenHeight)
-    console.log(`x: ${this.x}, y: ${this.y}, width: ${this.width}, height: ${this.height}`)
-    console.log(this.chart.height == 0)
+
+
+    this.renderer.setStyle(this.containerRef.nativeElement, 'width', this.width + 'px')
+    this.renderer.setStyle(this.containerRef.nativeElement, 'height', this.height + 'px')
+    this.renderer.setStyle(this.containerRef.nativeElement, 'left', this.x + 'px')
+    this.renderer.setStyle(this.containerRef.nativeElement, 'top', this.y + 'px')
   }
 
 }

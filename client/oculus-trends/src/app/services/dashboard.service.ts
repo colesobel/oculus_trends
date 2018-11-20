@@ -13,6 +13,7 @@ export interface DashboardInterface {
 export class DashboardService {
   onDashboard: boolean = false
   onDashboardChange = new Subject<boolean>()
+  onWindowChange = new Subject<void>()
 
   constructor(private http: HttpClient, private globalService: GlobalService) { }
 
@@ -33,5 +34,9 @@ export class DashboardService {
 
   getCharts(dashboardId: number) {
     return this.http.get(this.globalService.apiUrl + `dashboard/${dashboardId}/charts`, {observe: 'response'})
+  }
+
+  notifyWindowChange() {
+    this.onWindowChange.next()
   }
 }
