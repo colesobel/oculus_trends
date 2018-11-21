@@ -40,5 +40,8 @@ dependencies:
   - bcrypt==3.1.4
   - pycrypto==2.6.1
   - pyjwt==1.6.4
+  - redis==3.0.1
+
+
 prefix: /Users/cole/anaconda/envs/oculus_trends
 

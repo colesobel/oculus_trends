@@ -62,9 +62,17 @@ class Chart(base_model.BaseModel):
         }
 
     def run_query(self, refresh=False):
-        # TODO caching system for query results
+        # TODO caching system for query results'
+
+        if not refresh:  # pull from cache
+            result = database.redis_get(self.id_)
+            if result:
+                return json.loads(result)
+
         dbc = database_connection.DatabaseConnection.find(self.dbc_id)
         result = dbc.run_query(self.query)
+        database.redis_set(self.id_, utils.to_json(result))
+
         return result
 
     @classmethod

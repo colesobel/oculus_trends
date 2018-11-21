@@ -1,11 +1,46 @@
+import redis
 import pymysql
 
 # TODO MAKE ALL THESE ENVIRONMENT VARIABLES
+REDIS_HOST = 'localhost'
+REDIS_PORT = 6379
+
 HOST = 'localhost'
 USER = 'root'
 PASSWORD = ''
 DATABASE = 'oculus_trends'
 # TODO MAKE ALL THESE ENVIRONMENT VARIABLES
+
+
+def connect_to_redis():
+    r = redis.Redis(
+        host=REDIS_HOST,
+        port=REDIS_PORT,
+        db=0
+    )
+    return r
+
+
+def redis_get(key):
+    try:
+        r = connect_to_redis()
+        result = r.get(key)
+        return result.decode('utf-8') if result else None
+    except Exception as e:
+        print(e)
+        return None
+
+
+def redis_set(key, val):
+    try:
+        r = connect_to_redis()
+        r.set(key, val)
+        return True
+    except Exception as e:
+        print(e)
+        return False
+
+
 
 
 def create_mysql_connection(database=DATABASE, local_infile=False):
