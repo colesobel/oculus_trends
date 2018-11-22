@@ -4,6 +4,7 @@ import { DashboardService } from '../../services/dashboard.service';
 import { ChartService } from '../../services/chart.service';
 import { Chart } from '../../models/chart.model'
 
+
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',

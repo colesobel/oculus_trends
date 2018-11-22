@@ -66,11 +66,20 @@ export class ChartService {
     return chartIds[chartType]
   }
 
-  chartTypeNameToId(chartTypeName) {
+  chartTypeIdToFriendlyName(chartTypeName) {
     let chartTypeNames = {
       1: 'table', 
       2: 'column'
     }
+    return chartTypeNames[chartTypeName]
+  }
+
+  chartTypeIdToOfficialName(chartTypeId): string {
+    let officialNames = {
+      1: 'table', 
+      2: 'column2d'
+    }
+    return officialNames[chartTypeId]
   }
 
   newChartSave(saveObj) {

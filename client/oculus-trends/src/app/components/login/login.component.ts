@@ -1,3 +1,4 @@
+// import {MatTooltipModule} from '@angular/material/tooltip'
 import { Component, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms'
 import { Router } from '@angular/router'
@@ -26,7 +27,7 @@ export class LoginComponent implements OnInit {
       if (response.headers.has('jwt')) {
         let token = response.headers.get('jwt')
         this.authService.login(token, response.body['account_info'])
-        this.router.navigate(['app'])
+        this.router.navigate(['app', 'dashboards'])
       }
       this.submitted = false
       }, 

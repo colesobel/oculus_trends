@@ -1,5 +1,7 @@
 /* You can add global styles to this file, and also import other style files */
 
+@import "~@angular/material/prebuilt-themes/indigo-pink.css";
+
 .clickable {
     cursor: pointer;
 }
@@ -7,3 +9,13 @@
 .invalid {
     border: 1px solid red;
 }
+
+.custom-tooltip {
+    background: black;
+}
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+
+

@@ -25,19 +25,13 @@ export class ChartComponent implements OnInit, OnDestroy {
   globalEventListenerRef: (event: MouseEvent) => void
   windowSubscription: Subscription
   globalRefreshSubscription: Subscription
+  officialChartName: string
 
   constructor(private element: ElementRef, private renderer: Renderer2, private chartService: ChartService, private dashboardService: DashboardService) { }
 
   ngOnInit() {
-    this.chartService.runChart(this.chart).then(response => {
-      console.log('Successful Query Response!')
-      console.log(response)
-      this.dataSource = response
-    }, 
-    error => {
-      console.log('The query respoonse had an error')
-      console.log(error)
-    })
+    this.runChart()
+    this.officialChartName = this.chartService.chartTypeIdToOfficialName(this.chart.chartTypeId)
     this.screenWidth = window.outerWidth
     this.screenHeight = window.outerHeight
     
@@ -123,6 +117,17 @@ export class ChartComponent implements OnInit, OnDestroy {
     })
   }
 
+  runChart(refresh: number = 0) {
+    this.chartService.runChart(this.chart, refresh).then(response => {
+      console.log('Successful Query Response!')
+      this.dataSource = response
+    }, 
+    error => {
+      console.log('The query respoonse had an error')
+      console.log(error)
+    })
+  }
+
   ngOnDestroy() {
     document.removeEventListener('mouseup', this.globalEventListenerRef)
     this.windowSubscription.unsubscribe()
@@ -131,6 +136,7 @@ export class ChartComponent implements OnInit, OnDestroy {
 
   onRefresh() {
     console.log(`Rereshing chart: ${this.chart.id}`)
+    this.runChart(1)
   }
 
   convertChartSpecs() {

@@ -32,6 +32,8 @@ import { DashboardsDefaultComponent } from './components/dashboards-default/dash
 import { NewDashboardComponent } from './components/new-dashboard/new-dashboard.component';
 import { NewChartComponent } from './components/new-chart/new-chart.component';
 import { TableComponent } from './components/table/table.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import {MatTooltipModule} from '@angular/material/tooltip';
 
 FusionChartsModule.fcRoot(FusionCharts, Charts)
 
@@ -75,6 +77,8 @@ FusionChartsModule.fcRoot(FusionCharts, Charts)
     FormsModule, 
     HttpClientModule, 
     FusionChartsModule, 
+    BrowserAnimationsModule, 
+    MatTooltipModule
   ],
   providers: [
     CookieService, 
