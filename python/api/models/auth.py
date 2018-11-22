@@ -1,3 +1,4 @@
+import os
 import random, string, json
 from collections import namedtuple
 import jwt
@@ -12,8 +13,6 @@ from api.models import http_responses
 AESEncryption = namedtuple('AESEncryption', ['cipher_text', 'key', 'iv'])
 FernetEncryption = namedtuple('FernetEncryption', ['cipher_text', 'key'])
 
-jwt_secret = 'cole'  # TODO MOVE THIS TO ENVIRONMENT VARIABLE
-jwt_algo = 'HS256'  # TODO MOVE THIS TO ENVIRONMENT VARIABLE
 
 
 def create_salt(size=16):
@@ -74,7 +73,7 @@ def decode_jwt(token=None):
     token = token or request.headers.get('jwt')
     if token:
         try:
-            decoded = jwt.decode(token, jwt_secret, algorithms=jwt_algo)
+            decoded = jwt.decode(token, os.environ['JWT_SECRET'], algorithms=os.environ['JWT_ALGO'])
             return decoded
         except:
             return None
@@ -87,7 +86,7 @@ def encode_jwt(user_id, email, account_id, role_id):
         account_id=account_id,
         role_id=role_id
     )
-    encoded = jwt.encode(data, key=jwt_secret, algorithm=jwt_algo)
+    encoded = jwt.encode(data, key=os.environ['JWT_SECRET'], algorithm=os.environ['JWT_ALGO'])
     return encoded
 
 
