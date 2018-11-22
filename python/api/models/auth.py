@@ -130,22 +130,3 @@ def get_field_from_jwt(request, field):
     jwt = request.headers.get('jwt')
     decoded_jwt = decode_jwt(jwt)
     return decoded_jwt[field]
-
-
-
-# cipher_text, key = fernet_encrypt('hi there encrypt this')
-#
-# raw = fernet_decrypt(cipher_text, key)
-# print(raw)
-
-
-
-
-#
-# secret = 'this is my super cool key that is hidden'
-#
-# things = aes_encrypt(secret)
-# encrypted, key, iv = things.cipher_text, things.key, things.iv
-# print(encrypted)
-# raw = aes_decrypt(things.cipher_text, things.key, things.iv)
-# print(raw)
