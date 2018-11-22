@@ -1,21 +1,12 @@
+import os
 import redis
 import pymysql
-
-# TODO MAKE ALL THESE ENVIRONMENT VARIABLES
-REDIS_HOST = 'localhost'
-REDIS_PORT = 6379
-
-HOST = 'localhost'
-USER = 'root'
-PASSWORD = ''
-DATABASE = 'oculus_trends'
-# TODO MAKE ALL THESE ENVIRONMENT VARIABLES
 
 
 def connect_to_redis():
     r = redis.Redis(
-        host=REDIS_HOST,
-        port=REDIS_PORT,
+        host=os.environ['REDIS_HOST'],
+        port=os.environ['REDIS_PORT'],
         db=0
     )
     return r
@@ -41,13 +32,11 @@ def redis_set(key, val):
         return False
 
 
-
-
-def create_mysql_connection(database=DATABASE, local_infile=False):
+def create_mysql_connection(database=os.environ['OT_DATABASE'], local_infile=False):
     return pymysql.connect(
-        host=HOST,
-        user=USER,
-        password=PASSWORD,
+        host=os.environ['OT_HOST'],
+        user=os.environ['OT_USER'],
+        password=os.environ['OT_PASSWORD'],
         database=database,
         use_unicode=True,
         charset="utf8",
@@ -98,7 +87,7 @@ def sql_execute(query, args):
         return rows_affected
 
 
-def sql_fetch_all(query, args, database=DATABASE):
+def sql_fetch_all(query, args, database=os.environ['OT_DATABASE']):
     connection = create_mysql_connection(database=database)
     try:
         with connection.cursor() as cursor:
@@ -112,7 +101,7 @@ def sql_fetch_all(query, args, database=DATABASE):
         connection.close()
 
 
-def sql_fetch_one(query, args, database=DATABASE):
+def sql_fetch_one(query, args, database=os.environ['OT_DATABASE']):
     connection = create_mysql_connection(database=database)
     try:
         with connection.cursor() as cursor:

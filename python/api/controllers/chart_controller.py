@@ -48,9 +48,7 @@ def run_query(id_):
 
 @chart_controller.route('/chart/<int:id_>/spec', methods=['PUT'])
 @auth.authenticate
-def udpate_size_placement(id_):
-    print('chart_id: {}'.format(id_))
-    print(json.loads(request.data))
+def update_size_placement(id_):
     chart = Chart.find(id_)
     chart.update(json.loads(request.data))
     chart = Chart.find(id_)
