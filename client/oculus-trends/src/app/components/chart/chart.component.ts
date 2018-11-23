@@ -38,8 +38,6 @@ export class ChartComponent implements OnInit, OnDestroy {
     
     this.convertChartSpecs()
 
-    let styles = getComputedStyle(this.containerRef.nativeElement)
-
     let drag = (event: MouseEvent) => {
       let xDiff = event.screenX - this.psx
       let yDiff = event.screenY - this.psy

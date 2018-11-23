@@ -1,3 +1,15 @@
 .active {
     background-color: green;
 }
+
+.custom-nav {
+    position: fixed;
+    width: 100vw;
+    height: 60px;
+    z-index: 2;
+}
+
+.nav-filler {
+    width: 100vw;
+    height: 60px;
+}
