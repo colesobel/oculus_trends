@@ -26,6 +26,7 @@ export class ChartComponent implements OnInit, OnDestroy {
   windowSubscription: Subscription
   globalRefreshSubscription: Subscription
   officialChartName: string
+  spinner: boolean = false
 
   constructor(private element: ElementRef, private renderer: Renderer2, private chartService: ChartService, private dashboardService: DashboardService) { }
 
@@ -118,13 +119,16 @@ export class ChartComponent implements OnInit, OnDestroy {
   }
 
   runChart(refresh: number = 0) {
+    this.spinner = true
     this.chartService.runChart(this.chart, refresh).then(response => {
       console.log('Successful Query Response!')
       this.dataSource = response
+      this.spinner = false
     }, 
     error => {
       console.log('The query respoonse had an error')
       console.log(error)
+      this.spinner = false
     })
   }
 
