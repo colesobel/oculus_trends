@@ -66,6 +66,7 @@ export class ChartComponent implements OnInit, OnDestroy {
     let stopAll = (event: MouseEvent) => {
       event.preventDefault()
       this.showDimensions = false
+      this.dashboardService.notifyShowGridlines(false)
       document.removeEventListener('mousemove', drag)
       document.removeEventListener('mousemove', resize)
       this.chartService.onSizePlacementChange(this.chart, this.x, this.y, this.height, this.width, this.screenWidth, this.screenHeight).then(response => {
@@ -81,6 +82,7 @@ export class ChartComponent implements OnInit, OnDestroy {
 
     this.renderer.listen(this.element.nativeElement, 'mousedown', (event: MouseEvent) => {
       event.preventDefault()
+      this.dashboardService.notifyShowGridlines(true)
       let target = event.target as HTMLElement
       this.psx = event.screenX
       this.psy = event.screenY
@@ -94,6 +96,7 @@ export class ChartComponent implements OnInit, OnDestroy {
 
     this.renderer.listen(this.resizeRef.nativeElement, 'mousedown', (event: MouseEvent) => {
       event.preventDefault()
+      this.dashboardService.notifyShowGridlines(true)
       this.showDimensions = true
       this.psx = event.screenX
       this.psy = event.screenY
@@ -112,7 +115,7 @@ export class ChartComponent implements OnInit, OnDestroy {
   }
 
   setScreenDimensions() {
-    this.screenWidth = window.outerWidth
+    this.screenWidth = window.innerWidth
     this.screenHeight = window.innerHeight - 60  // navbar height
   }
 
@@ -122,6 +125,8 @@ export class ChartComponent implements OnInit, OnDestroy {
     this.renderer.setStyle(this.containerRef.nativeElement, 'left', this.x + 'px')
     this.renderer.setStyle(this.containerRef.nativeElement, 'top', this.y + 'px')
   }
+
+
 
   runChart(refresh: number = 0) {
     this.spinner = true

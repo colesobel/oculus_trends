@@ -15,6 +15,7 @@ export class DashboardService {
   onDashboardChange = new Subject<boolean>()
   onWindowChange = new Subject<void>()
   onGlobalRefresh = new Subject<void>()
+  showGridlines = new Subject<boolean>()
 
   constructor(private http: HttpClient, private globalService: GlobalService) { }
 
@@ -43,6 +44,10 @@ export class DashboardService {
 
   notifyGlobalRefresh() {
     this.onGlobalRefresh.next()
+  }
+
+  notifyShowGridlines(show: boolean) {
+    this.showGridlines.next(show)
   }
 
   

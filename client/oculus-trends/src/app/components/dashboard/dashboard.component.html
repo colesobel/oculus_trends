@@ -9,7 +9,15 @@
     </div>
 </div>
 
+<div *ngIf="showGridlines" class="vr-gridline" [ngStyle]="{'left': vrThird + 'px'}"></div>
+<div *ngIf="showGridlines" class="vr-gridline" [ngStyle]="{'left': vrHalf + 'px'}"></div>
+<div *ngIf="showGridlines" class="vr-gridline" [ngStyle]="{'left': vrTwoThird + 'px'}"></div>
+
 <div class="dashboard">
+    <div *ngIf="showGridlines" class="hr-gridline" [ngStyle]="{'top': hrThird + 'px'}"></div>
+    <div *ngIf="showGridlines" class="hr-gridline" [ngStyle]="{'top': hrHalf + 'px'}"></div>
+    <div *ngIf="showGridlines" class="hr-gridline" [ngStyle]="{'top': hrTwoThird + 'px'}"></div>
+
     <app-chart
     *ngFor="let chart of charts"
     [chart]="chart">

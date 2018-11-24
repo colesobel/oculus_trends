@@ -14,6 +14,17 @@ export class DashboardComponent implements OnInit, OnDestroy {
   dashboardId: number
   noCharts: boolean = false
   charts: Chart[]
+
+  screenWidth: number
+  screenHeight: number
+  hrHalf: number
+  hrThird: number
+  hrTwoThird: number
+  vrHalf: number
+  vrThird: number
+  vrTwoThird: number
+  showGridlines: boolean = false
+
   resizeListener: (event: MouseEvent) => void
   constructor(private activatedRoute: ActivatedRoute, private router: Router, private dashboardService: DashboardService, private chartService: ChartService) { }
 
@@ -36,8 +47,28 @@ export class DashboardComponent implements OnInit, OnDestroy {
     })  
     this.resizeListener = () => {
       this.dashboardService.notifyWindowChange()
+      this.setScreenDimensions()
     }
     window.addEventListener('resize', this.resizeListener)
+    this.setScreenDimensions()
+    this.dashboardService.showGridlines.subscribe(response => {
+      this.showGridlines = response
+    })
+  }
+
+  setScreenDimensions() {
+    this.screenWidth = window.innerWidth
+    this.screenHeight = window.innerHeight - 60  // navbar height
+
+    // gridlines
+    this.hrHalf = Math.round(this.screenHeight / 2)
+    this.hrThird = Math.round(this.screenHeight / 3)
+    this.hrTwoThird = Math.round((this.screenHeight / 3) * 2)
+
+    this.vrHalf = Math.round(this.screenWidth / 2)
+    this.vrThird = Math.round(this.screenWidth / 3)
+    this.vrTwoThird = Math.round((this.screenWidth / 3) * 2)
+
   }
 
   ngOnDestroy() {
