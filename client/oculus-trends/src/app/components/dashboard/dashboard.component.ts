@@ -17,12 +17,16 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   screenWidth: number
   screenHeight: number
+  hrFourth: number
   hrHalf: number
   hrThird: number
   hrTwoThird: number
+  hrThreeFourth: number
+  vrFourth: number
   vrHalf: number
   vrThird: number
   vrTwoThird: number
+  vrThreeFourth: number
   showGridlines: boolean = false
 
   resizeListener: (event: MouseEvent) => void
@@ -61,13 +65,17 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.screenHeight = window.innerHeight - 60  // navbar height
 
     // gridlines
+    this.hrFourth = Math.round(this.screenHeight / 4)
     this.hrHalf = Math.round(this.screenHeight / 2)
     this.hrThird = Math.round(this.screenHeight / 3)
     this.hrTwoThird = Math.round((this.screenHeight / 3) * 2)
+    this.hrThreeFourth = Math.round((this.screenHeight / 4) * 3)
 
+    this.vrFourth = Math.round(this.screenWidth / 4)
     this.vrHalf = Math.round(this.screenWidth / 2)
     this.vrThird = Math.round(this.screenWidth / 3)
     this.vrTwoThird = Math.round((this.screenWidth / 3) * 2)
+    this.vrThreeFourth = Math.round((this.screenWidth / 4) * 3)
 
   }
 
