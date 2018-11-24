@@ -35,7 +35,6 @@ export class ChartComponent implements OnInit, OnDestroy {
     this.runChart()
     this.officialChartName = this.chartService.chartTypeIdToOfficialName(this.chart.chartTypeId)
     this.setScreenDimensions()
-    
     this.convertChartSpecs()
 
     let drag = (event: MouseEvent) => {
@@ -45,12 +44,12 @@ export class ChartComponent implements OnInit, OnDestroy {
       this.x = Math.max((this.x + xDiff), 0)
       this.y = Math.max((this.y + yDiff), 0)
       
-      this.renderer.setStyle(this.containerRef.nativeElement, 'left', this.x + 'px')
-      this.renderer.setStyle(this.containerRef.nativeElement, 'top', this.y + 'px')
+      this.renderChartDimensions()
 
       this.psx = event.screenX
       this.psy = event.screenY
     }
+
     let resize = (event: MouseEvent) => {
       let xDiff = event.screenX - this.psx
       let yDiff = event.screenY - this.psy
@@ -58,8 +57,7 @@ export class ChartComponent implements OnInit, OnDestroy {
       this.width = this.width + xDiff
       this.height = this.height + yDiff
 
-      this.renderer.setStyle(this.containerRef.nativeElement, 'width', this.width + 'px')
-      this.renderer.setStyle(this.containerRef.nativeElement, 'height', this.height + 'px')
+      this.renderChartDimensions()
 
       this.psx = event.screenX
       this.psy = event.screenY
@@ -99,10 +97,6 @@ export class ChartComponent implements OnInit, OnDestroy {
       this.showDimensions = true
       this.psx = event.screenX
       this.psy = event.screenY
-      
-      let stopResize = (event: MouseEvent) => {
-        document.removeEventListener('mousemove', resize)
-      }
 
       document.addEventListener('mousemove', resize)
     })
@@ -120,6 +114,13 @@ export class ChartComponent implements OnInit, OnDestroy {
   setScreenDimensions() {
     this.screenWidth = window.outerWidth
     this.screenHeight = window.innerHeight - 60  // navbar height
+  }
+
+  renderChartDimensions() {
+    this.renderer.setStyle(this.containerRef.nativeElement, 'width', this.width + 'px')
+    this.renderer.setStyle(this.containerRef.nativeElement, 'height', this.height + 'px')
+    this.renderer.setStyle(this.containerRef.nativeElement, 'left', this.x + 'px')
+    this.renderer.setStyle(this.containerRef.nativeElement, 'top', this.y + 'px')
   }
 
   runChart(refresh: number = 0) {

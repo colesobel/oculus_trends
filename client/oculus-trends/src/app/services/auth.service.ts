@@ -37,6 +37,11 @@ export class AuthService {
     this.fireAccountOverviewSubject()
   }
 
+  addToDbcs(dbc) {
+    this.accountOverview.dbcs.push(dbc)
+    this.fireAccountOverviewSubject()
+  }
+
   updateDashboards(dashboard: DashboardInterface) {
     this.accountOverview.dashboards.push(dashboard)
     console.log(this.accountOverview)
