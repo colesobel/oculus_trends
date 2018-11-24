@@ -27,6 +27,7 @@ export class ChartComponent implements OnInit, OnDestroy {
   globalRefreshSubscription: Subscription
   officialChartName: string
   spinner: boolean = false
+  showDimensions: boolean = false
 
   constructor(private element: ElementRef, private renderer: Renderer2, private chartService: ChartService, private dashboardService: DashboardService) { }
 
@@ -66,6 +67,7 @@ export class ChartComponent implements OnInit, OnDestroy {
 
     let stopAll = (event: MouseEvent) => {
       event.preventDefault()
+      this.showDimensions = false
       document.removeEventListener('mousemove', drag)
       document.removeEventListener('mousemove', resize)
       this.chartService.onSizePlacementChange(this.chart, this.x, this.y, this.height, this.width, this.screenWidth, this.screenHeight).then(response => {
@@ -94,6 +96,7 @@ export class ChartComponent implements OnInit, OnDestroy {
 
     this.renderer.listen(this.resizeRef.nativeElement, 'mousedown', (event: MouseEvent) => {
       event.preventDefault()
+      this.showDimensions = true
       this.psx = event.screenX
       this.psy = event.screenY
       

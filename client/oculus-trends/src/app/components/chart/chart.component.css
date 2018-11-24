@@ -22,6 +22,12 @@ div {
   cursor: nwse-resize;
 }
 
+.dimension-label {
+  position: absolute;
+  bottom: 0;
+  right: 20px;
+}
+
 .spinner {
   animation: spin 2s linear infinite;
 }
