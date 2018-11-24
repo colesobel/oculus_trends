@@ -33,8 +33,7 @@ export class ChartComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.runChart()
     this.officialChartName = this.chartService.chartTypeIdToOfficialName(this.chart.chartTypeId)
-    this.screenWidth = window.outerWidth
-    this.screenHeight = window.outerHeight
+    this.setScreenDimensions()
     
     this.convertChartSpecs()
 
@@ -106,14 +105,18 @@ export class ChartComponent implements OnInit, OnDestroy {
     })
 
     this.windowSubscription = this.dashboardService.onWindowChange.subscribe(() => {
-      this.screenWidth = window.outerWidth
-      this.screenHeight = window.outerHeight
+      this.setScreenDimensions()
       this.convertChartSpecs()
     })
 
     this.globalRefreshSubscription = this.dashboardService.onGlobalRefresh.subscribe(() => {
       this.onRefresh()
     })
+  }
+
+  setScreenDimensions() {
+    this.screenWidth = window.outerWidth
+    this.screenHeight = window.innerHeight - 60  // navbar height
   }
 
   runChart(refresh: number = 0) {
