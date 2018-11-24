@@ -25,7 +25,7 @@
             </div>
 
             <label for="databaseServer">Database Server</label> <br>
-            <select class="form-control" name="databaseServer" ngModel="mysql">
+            <select (change)="onServerChange(dbServer)" #dbServer class="form-control" name="databaseServer" ngModel="mysql">
               <option value="mysql">MySQL</option>
               <option value="postgres">PostgreSQL</option>
               <option value="redshift">Redshift</option>
@@ -58,13 +58,12 @@
             <div class="form-group">
               <label for="port">Port</label>
               <input 
-                required 
                 name="port" 
                 type="number" 
                 class="form-control" 
                 id="port" 
                 ngModel
-                placeholder="Port">
+                placeholder="{{portHint}}">
             </div>
 
             <div class="form-group">

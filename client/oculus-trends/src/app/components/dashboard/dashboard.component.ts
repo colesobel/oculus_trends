@@ -27,6 +27,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
   vrThird: number
   vrTwoThird: number
   vrThreeFourth: number
+  hrQuarters: number[]
+  vrQuarters: number[]
+  vrThirds: number[]
+  hrThirds: number[]
   showGridlines: boolean = false
 
   resizeListener: (event: MouseEvent) => void
@@ -65,18 +69,31 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.screenHeight = window.innerHeight - 60  // navbar height
 
     // gridlines
-    this.hrFourth = Math.round(this.screenHeight / 4)
-    this.hrHalf = Math.round(this.screenHeight / 2)
-    this.hrThird = Math.round(this.screenHeight / 3)
-    this.hrTwoThird = Math.round((this.screenHeight / 3) * 2)
-    this.hrThreeFourth = Math.round((this.screenHeight / 4) * 3)
+    let quarterBase = []
+    let thirdBase = []
+    for (let i = 1; i <=3; i++) {
+      quarterBase.push(i)
+      if (i <= 2) {
+        thirdBase.push(i)
+      }
+    } 
 
-    this.vrFourth = Math.round(this.screenWidth / 4)
-    this.vrHalf = Math.round(this.screenWidth / 2)
-    this.vrThird = Math.round(this.screenWidth / 3)
-    this.vrTwoThird = Math.round((this.screenWidth / 3) * 2)
-    this.vrThreeFourth = Math.round((this.screenWidth / 4) * 3)
+    this.hrQuarters = quarterBase.map(i => {
+      return Math.round((this.screenHeight / 4) * i)
+    })
+    this.vrQuarters = quarterBase.map(i => {
+      return Math.round((this.screenWidth / 4) * i)
+    })
 
+    this.hrThirds = thirdBase.map(i => {
+      return Math.round((this.screenHeight / 3) * i)
+    })
+
+    this.vrThirds = thirdBase.map(i => {
+      return Math.round((this.screenWidth / 3) * i)
+    })
+
+    console.log(this.vrThirds)
   }
 
   ngOnDestroy() {

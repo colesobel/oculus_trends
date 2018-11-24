@@ -82,7 +82,7 @@ export class ChartComponent implements OnInit, OnDestroy {
 
     this.renderer.listen(this.element.nativeElement, 'mousedown', (event: MouseEvent) => {
       event.preventDefault()
-      this.dashboardService.notifyShowGridlines(true)
+      
       let target = event.target as HTMLElement
       this.psx = event.screenX
       this.psy = event.screenY
@@ -90,6 +90,7 @@ export class ChartComponent implements OnInit, OnDestroy {
       if (target.tagName !== 'rect') {
         return
       }
+      this.dashboardService.notifyShowGridlines(true)
   
       document.addEventListener('mousemove', drag)
     })

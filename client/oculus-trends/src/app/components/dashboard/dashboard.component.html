@@ -8,19 +8,16 @@
       </div>
     </div>
 </div>
-
-<div *ngIf="showGridlines" class="vr-gridline grey" [ngStyle]="{'left': vrFourth + 'px'}"></div>
-<div *ngIf="showGridlines" class="vr-gridline blue" [ngStyle]="{'left': vrThird + 'px'}"></div>
-<div *ngIf="showGridlines" class="vr-gridline grey" [ngStyle]="{'left': vrHalf + 'px'}"></div>
-<div *ngIf="showGridlines" class="vr-gridline blue" [ngStyle]="{'left': vrTwoThird + 'px'}"></div>
-<div *ngIf="showGridlines" class="vr-gridline grey" [ngStyle]="{'left': vrThreeFourth + 'px'}"></div>
+<ng-container *ngIf="showGridlines">
+    <div *ngFor="let vrq of vrQuarters" [ngStyle]="{'left': vrq + 'px'}" class="vr-gridline grey"></div>
+    <div *ngFor="let vrt of vrThirds" [ngStyle]="{'left': vrt + 'px'}" class="vr-gridline blue"></div>
+</ng-container>
 
 <div class="dashboard">
-    <div *ngIf="showGridlines" class="hr-gridline grey" [ngStyle]="{'top': hrFourth + 'px'}"></div>
-    <div *ngIf="showGridlines" class="hr-gridline blue" [ngStyle]="{'top': hrThird + 'px'}"></div>
-    <div *ngIf="showGridlines" class="hr-gridline grey" [ngStyle]="{'top': hrHalf + 'px'}"></div>
-    <div *ngIf="showGridlines" class="hr-gridline blue" [ngStyle]="{'top': hrTwoThird + 'px'}"></div>
-    <div *ngIf="showGridlines" class="hr-gridline grey" [ngStyle]="{'top': hrThreeFourth + 'px'}"></div>
+    <ng-container *ngIf="showGridlines">
+        <div *ngFor="let hrq of hrQuarters" [ngStyle]="{'top': hrq + 'px'}" class="hr-gridline grey"></div>
+        <div *ngFor="let hrt of hrThirds" [ngStyle]="{'top': hrt + 'px'}" class="hr-gridline blue"></div>
+    </ng-container>
 
     <app-chart
     *ngFor="let chart of charts"
