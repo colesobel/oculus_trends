@@ -14,6 +14,7 @@ import { DashboardsComponent } from './components/dashboards/dashboards.componen
 import { DashboardsDefaultComponent } from './components/dashboards-default/dashboards-default.component';
 import { NewDashboardComponent } from './components/new-dashboard/new-dashboard.component';
 import { NewChartComponent } from './components/new-chart/new-chart.component';
+import { ChartEditComponent } from './components/chart-edit/chart-edit.component';
 
 const routes: Routes = [
   {
@@ -37,6 +38,7 @@ const routes: Routes = [
         {path: 'new', component: NewDashboardComponent},
         {path: '', component: DashboardsDefaultComponent}
       ]}, 
+      {path: 'chart/:id/edit', component: ChartEditComponent}
     ]
   },
   {

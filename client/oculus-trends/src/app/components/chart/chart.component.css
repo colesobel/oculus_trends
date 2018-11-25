@@ -12,6 +12,14 @@ div {
   cursor: pointer!important;
 }
 
+.edit {
+  position: absolute;
+  top: 0;
+  right: 30px!important;
+  height: 20px!important;
+  cursor: pointer!important
+}
+
 .resize {
   position: absolute;
   bottom: 0;

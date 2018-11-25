@@ -34,6 +34,8 @@ import { NewChartComponent } from './components/new-chart/new-chart.component';
 import { TableComponent } from './components/table/table.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { ChartEditComponentComponent } from './components/chart-edit-component/chart-edit-component.component';
+import { ChartEditComponent } from './components/chart-edit/chart-edit.component';
 
 FusionChartsModule.fcRoot(FusionCharts, Charts)
 
@@ -69,7 +71,9 @@ FusionChartsModule.fcRoot(FusionCharts, Charts)
     DashboardsDefaultComponent,
     NewDashboardComponent,
     NewChartComponent,
-    TableComponent
+    TableComponent,
+    ChartEditComponentComponent,
+    ChartEditComponent
   ],
   imports: [
     BrowserModule,

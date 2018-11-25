@@ -17,7 +17,7 @@
     aria-label="Button that displays a tooltip when focused or hovered over"
     matTooltipClass="custom-tooltip"
     [matTooltipPosition]="'above'">
-    <span  *ngIf="showDimensions" class="dimension-label">{{width}} X {{height}}</span>
+    <span *ngIf="showDimensions" class="dimension-label">{{width}} X {{height}}</span>
   <img 
     (click)="onRefresh()" 
     src="assets/images/refresh-icon.png" 
@@ -25,8 +25,19 @@
     class="refresh"
     mat-raised-button
     matTooltip="Refresh Chart Data"
-    aria-label="Button that displays a tooltip when focused or hovered over"
+    aria-label="Refresh Chart Data"
     matTooltipClass="custom-tooltip"
     [matTooltipPosition]="'above'"
     [ngClass]="{'spinner': spinner}">
+
+  <img 
+    src="assets/images/edit-icon.png" 
+    alt="edit" 
+    class="edit"
+    routerLink="/app/chart/{{chart.id}}/edit"
+    mat-raised-button
+    matTooltip="Edit Chart"
+    aria-label="Edit Chart"
+    matTooltipClass="custom-tooltip"
+    [matTooltipPosition]="'above'">
 </div>

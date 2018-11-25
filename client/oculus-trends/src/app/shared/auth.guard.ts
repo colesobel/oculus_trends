@@ -11,6 +11,7 @@ export class AuthGuard implements CanActivate {
   constructor(private router: Router, private authService: AuthService, private globalService: GlobalService) {}
 
   canActivate(next: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> | Promise<boolean> | boolean {
+    let redirectPath = state.url.replace(/\/$/, '').replace(/^\/+/g, '')
     return new Promise((resolve, reject) => {
       if (this.authService.authenticated) {
         resolve(true)
@@ -21,11 +22,11 @@ export class AuthGuard implements CanActivate {
             resolve(true)
           })
           .catch(error => {
-            this.router.navigate(['login'])
-            resolve(false)
+            this.router.navigate(['login', {redirect: redirectPath}])
+            reject(false)
           })
         } else {
-          this.router.navigate(['login'])
+          this.router.navigate(['login', {redirect: redirectPath}])
           reject(false)
         }
       }

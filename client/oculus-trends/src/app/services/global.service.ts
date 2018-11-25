@@ -6,7 +6,7 @@ import { CookieService } from 'ngx-cookie-service';
 })
 export class GlobalService {
   apiUrl: string = 'http://localhost:5000/'
-  tokenKey: string = 'token'
+  tokenKey: string = 'ot_token'
 
   constructor(private cookieService: CookieService) { }
 

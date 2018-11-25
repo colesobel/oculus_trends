@@ -83,11 +83,11 @@ export class AuthService {
 
   setCookie(key, value) {
     this.removeCookie(key)
-    this.cookieService.set(key, value)
+    this.cookieService.set(key, value, null, '/')
   }
 
   removeCookie(key) {
-    this.cookieService.delete(key)
+    this.cookieService.delete(key, '/')
   }
 
   getAccountOverview(): Promise<boolean> {

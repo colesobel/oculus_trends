@@ -57,3 +57,15 @@ def update_size_placement(id_):
         'result': chart.json_full()
     }
     return Response(to_json(data))
+
+
+@chart_controller.route('/chart/<int:id_>', methods=['GET'])
+@auth.authenticate
+def get(id_):
+    chart = Chart.find(id_)
+    if chart:
+        return Response(to_json({
+            'record': chart.json_full()
+        }))
+    else:
+        return http_responses.not_found()

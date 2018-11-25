@@ -19,8 +19,6 @@ export class NewDbConnectionComponent implements OnInit {
   }
 
   onServerChange(serverRef) {
-    // console.log(serverRef.nativeElement.value)
-    console.log(serverRef.value)
     switch (serverRef.value) {
       case 'mysql': 
         this.portHint = 3306

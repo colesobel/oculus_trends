@@ -1,7 +1,7 @@
 // import {MatTooltipModule} from '@angular/material/tooltip'
 import { Component, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms'
-import { Router } from '@angular/router'
+import { Router, ActivatedRoute } from '@angular/router'
 
 import { AuthService } from '../../services/auth.service'
 
@@ -15,10 +15,15 @@ export class LoginComponent implements OnInit {
   submitted: Boolean = false
   invalidCreds: Boolean = false
   serverError: Boolean = false
+  redirectPath: string[]
 
-  constructor(private authService: AuthService, private router: Router) { }
+  constructor(private authService: AuthService, private router: Router, private activatedRoute: ActivatedRoute) { }
 
   ngOnInit() {
+    if (this.activatedRoute.snapshot.params['redirect']) {
+      let path = this.activatedRoute.snapshot.params['redirect'].split('/')
+      this.redirectPath = path
+    }
   }
 
   onSubmit(form: NgForm) {
@@ -27,7 +32,11 @@ export class LoginComponent implements OnInit {
       if (response.headers.has('jwt')) {
         let token = response.headers.get('jwt')
         this.authService.login(token, response.body['account_info'])
-        this.router.navigate(['app', 'dashboards'])
+        if (this.redirectPath) {
+          this.router.navigate(this.redirectPath)
+        } else {
+          this.router.navigate(['app', 'dashboards'])  
+        }
       }
       this.submitted = false
       }, 

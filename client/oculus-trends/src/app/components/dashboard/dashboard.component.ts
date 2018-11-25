@@ -92,8 +92,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.vrThirds = thirdBase.map(i => {
       return Math.round((this.screenWidth / 3) * i)
     })
-
-    console.log(this.vrThirds)
   }
 
   ngOnDestroy() {

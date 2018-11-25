@@ -154,8 +154,19 @@ export class ChartService {
       } else {
         reject(null)
       }
-    })
+    })    
+  }
 
+  getById(id: number): Promise<Chart> {
+    return new Promise((resolve, reject) => {
+      this.http.get(this.globalService.apiUrl + `chart/${id}`, {observe: 'response'}).subscribe(response => {
+        let chart = response.body['record']
+        resolve(this.toChartInterface(chart))
+      }, 
+      error => {
+        reject(error)
+      })
+    })
     
   }
 

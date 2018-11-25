@@ -22,7 +22,6 @@ def create():
 @dashboard_controller.route('/dashboard/<int:id_>/charts', methods=['GET'])
 @auth.authenticate
 def get_charts(id_):
-    print('The dashboard_id is: {}'.format(id_))
     account_id = auth.get_field_from_jwt(request, 'account_id')
     raw_charts = Dashboard.get_all_charts(account_id, id_)
     charts = [c.json_full() for c in raw_charts]
