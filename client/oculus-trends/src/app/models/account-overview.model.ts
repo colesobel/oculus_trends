@@ -1,9 +1,9 @@
 export interface AccountOverviewInterface {
-  first_name: string, 
-  user_id: number, 
-  account_name: string, 
-  account_id: number, 
-  role_id: number,
+  firstName: string, 
+  userId: number, 
+  accountName: string, 
+  accountId: number, 
+  roleId: number,
   dashboards: DashboardInterface[], 
   dbcs: DatabaseConnectionInterface[]
 }
@@ -11,7 +11,7 @@ export interface AccountOverviewInterface {
 export interface DashboardInterface {
   id: string, 
   name: string, 
-  url_alias: string
+  urlAlias: string
 }
 
 export interface DatabaseConnectionInterface {

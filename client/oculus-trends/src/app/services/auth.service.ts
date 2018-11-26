@@ -17,7 +17,7 @@ export class AuthService {
 
   authenticated: Boolean = false
   initializationComplete: Boolean = false
-  accountOverview= null
+  accountOverview = null
   accountOverviewChanged = new Subject<object>()
 
   constructor(
@@ -55,9 +55,21 @@ export class AuthService {
     )
   }
 
+  toAccountOverview(overview: object): AccountOverviewInterface {
+    return {
+      firstName: overview['first_name'], 
+      userId: overview['user_id'], 
+      accountName: overview['account_name'], 
+      accountId: overview['account_id'], 
+      roleId: overview['role_id'],
+      dashboards: overview['dashboards'], 
+      dbcs: overview['dbcs']
+    }
+  }
+
   login(token: string, accountOverview: AccountOverviewInterface) {
     this.setCookie(this.globalService.tokenKey, token)
-    this.accountOverview = accountOverview
+    this.accountOverview = this.toAccountOverview(accountOverview)
     this.authenticated = true
   }
 
@@ -93,14 +105,29 @@ export class AuthService {
   getAccountOverview(): Promise<boolean> {
     return new Promise((resolve, reject) => {
       this.http.get(this.globalService.apiUrl + 'startup', {observe: 'response'}).subscribe(response => {
-        this.accountOverview = response.body
+        this.accountOverview = this.toAccountOverview(response.body)
+        console.log(this.accountOverview)
         this.authenticated = true
         this.fireAccountOverviewSubject()
-        console.log(this.accountOverview)
         resolve(true)
       }, 
       error => {
         reject(false)
+      })
+    }) 
+  }
+
+  getUsersForAccount() {
+    return new Promise((resolve, reject) => {
+      let accountId = this.accountOverview.accountId
+      this.http.get(this.globalService.apiUrl + 'users', {observe: 'response'}).subscribe(response => {
+        console.log(response)
+        resolve(response.body)
+      }, 
+      error => {
+        console.log('there was an error getting users')
+        console.log(error)
+        reject(error)
       })
     })
     

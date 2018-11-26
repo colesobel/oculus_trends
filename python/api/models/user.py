@@ -17,6 +17,13 @@ class User(BaseModel):
         self.last_name = last_name
         self.active = active
 
+    def json(self):
+        return {
+            'id': self.id_,
+            'firstName': self.first_name,
+            'lastName': self.last_name
+        }
+
     @classmethod
     def find(cls, id_):
         sql = """
@@ -128,3 +135,24 @@ class User(BaseModel):
         }
 
         return startup_info
+
+    @classmethod
+    def get_all_for_account_id(cls, account_id):
+        sql = """
+        SELECT id
+        FROM `user`
+        WHERE account_id = %s
+        AND user.deleted = 0
+        AND user.active = 1
+        """
+        args = (account_id, )
+
+        results = database.sql_fetch_all(sql, args)
+        user_ids = [u['id'] for u in results]
+        if not user_ids:
+            return []
+
+        max_workers = min(20, len(user_ids))
+        with futures.ThreadPoolExecutor(max_workers=max_workers) as executor:
+            users = executor.map(cls.find, user_ids)
+            return [u for u in users]

@@ -66,12 +66,12 @@ export class ChartService {
     return chartIds[chartType]
   }
 
-  chartTypeIdToFriendlyName(chartTypeName) {
+  chartTypeIdToFriendlyName(chartTypeId) {
     let chartTypeNames = {
       1: 'table', 
       2: 'column'
     }
-    return chartTypeNames[chartTypeName]
+    return chartTypeNames[chartTypeId]
   }
 
   chartTypeIdToOfficialName(chartTypeId): string {
@@ -121,6 +121,18 @@ export class ChartService {
         let dataSource = this.toColumn(chartData)
         resolve(dataSource)
       }, 
+      error => {
+        reject(error)
+      })
+    })
+  }
+
+  getQueryResults(chartId: number): Promise<QueryResponse> {
+    return new Promise((resolve, reject) => {
+      this.http.get(this.globalService.apiUrl + `chart/${chartId}/run`, {observe: 'response'}).subscribe(response => {
+        let rows = response.body['results']
+        resolve(this.toQueryResponse(rows))
+      },
       error => {
         reject(error)
       })

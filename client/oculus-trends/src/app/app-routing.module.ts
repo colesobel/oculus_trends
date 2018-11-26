@@ -15,6 +15,8 @@ import { DashboardsDefaultComponent } from './components/dashboards-default/dash
 import { NewDashboardComponent } from './components/new-dashboard/new-dashboard.component';
 import { NewChartComponent } from './components/new-chart/new-chart.component';
 import { ChartEditComponent } from './components/chart-edit/chart-edit.component';
+import { ChartEditResolver } from './components/chart-edit/chart-edit-resolver';
+import { NewUserComponent } from './components/new-user/new-user.component';
 
 const routes: Routes = [
   {
@@ -27,6 +29,7 @@ const routes: Routes = [
         component: AccountComponent, 
         children: [
           {path: 'db-connection/new', component: NewDbConnectionComponent},
+          {path: 'users/new', component: NewUserComponent},
           {path: '', component: AccountDefaultComponent}
         ]
       }, 

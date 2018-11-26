@@ -4,6 +4,7 @@ import { AuthService } from '../../services/auth.service';
 import { DatabaseConnectionInterface, AccountOverviewInterface } from '../../models/account-overview.model'
 import { HttpClient } from '@angular/common/http';
 import { GlobalService } from '../../services/global.service';
+import { User } from '../../models/user.model';
 
 @Component({
   selector: 'app-account-default',
@@ -13,13 +14,26 @@ import { GlobalService } from '../../services/global.service';
 export class AccountDefaultComponent implements OnInit, OnDestroy {
   dbcs: DatabaseConnectionInterface[]
   accountOverviewSubscription: Subscription
+  users: User
   constructor(private authService: AuthService, private http: HttpClient, private globalService: GlobalService) { }
 
   ngOnInit() {
+    this.getUsers()
     this.dbcs = this.authService.accountOverview.dbcs
     this.accountOverviewSubscription = this.authService.accountOverviewChanged.subscribe((overview: AccountOverviewInterface) => {
       console.log('got a new value from account overview')
       this.dbcs = overview.dbcs
+    })
+  }
+
+  getUsers() {
+    this.authService.getUsersForAccount().then(response => {
+      console.log(response)
+      this.users = response['results']
+    }, 
+    error => {
+      console.log('error getting users')
+      console.log(error)
     })
   }
 
@@ -41,6 +55,12 @@ export class AccountDefaultComponent implements OnInit, OnDestroy {
         // TODO add error alerting here
       })
 
+    }
+  }
+
+  onDeleteUser(user: User) {
+    if (confirm(`Are you sure you want to delete user: ${user.firstName} ${user.lastName}?`)) {
+      console.log(`Deleting ${user.id}`)
     }
   }
 

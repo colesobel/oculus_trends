@@ -34,8 +34,9 @@ import { NewChartComponent } from './components/new-chart/new-chart.component';
 import { TableComponent } from './components/table/table.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { ChartEditComponentComponent } from './components/chart-edit-component/chart-edit-component.component';
 import { ChartEditComponent } from './components/chart-edit/chart-edit.component';
+import { ChartEditResolver } from './components/chart-edit/chart-edit-resolver';
+import { NewUserComponent } from './components/new-user/new-user.component';
 
 FusionChartsModule.fcRoot(FusionCharts, Charts)
 
@@ -72,8 +73,8 @@ FusionChartsModule.fcRoot(FusionCharts, Charts)
     NewDashboardComponent,
     NewChartComponent,
     TableComponent,
-    ChartEditComponentComponent,
-    ChartEditComponent
+    ChartEditComponent,
+    NewUserComponent
   ],
   imports: [
     BrowserModule,
@@ -87,7 +88,8 @@ FusionChartsModule.fcRoot(FusionCharts, Charts)
   providers: [
     CookieService, 
     // { provide: APP_INITIALIZER, useFactory: initialize, deps: [AuthService, GlobalService, HttpClient], multi: true },
-    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }
+    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }, 
+    ChartEditResolver
   ],
   bootstrap: [AppComponent]
 })

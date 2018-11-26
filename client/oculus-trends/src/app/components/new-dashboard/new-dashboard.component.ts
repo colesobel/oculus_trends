@@ -24,7 +24,7 @@ export class NewDashboardComponent implements OnInit {
     this.dashboardService.createDashboard(form.value).subscribe((dashboard: DashboardInterface) => {
       let dash = dashboard['record'] as DashboardInterface
       this.authService.updateDashboards(dash)
-      this.router.navigate(['app', 'dashboard', dash.id, dash.url_alias])
+      this.router.navigate(['app', 'dashboard', dash.id, dash.urlAlias])
 
       console.log(dash)
     }, 
