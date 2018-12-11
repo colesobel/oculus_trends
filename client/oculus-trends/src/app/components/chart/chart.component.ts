@@ -81,21 +81,21 @@ export class ChartComponent implements OnInit, OnDestroy {
     document.addEventListener('mouseup', stopAll)
 
     this.renderer.listen(this.element.nativeElement, 'mousedown', (event: MouseEvent) => {
+      // Drag
       event.preventDefault()
-      
       let target = event.target as HTMLElement
       this.psx = event.screenX
       this.psy = event.screenY
-  
-      if (target.tagName !== 'rect') {
+      if (target.tagName === 'IMG') {
         return
       }
       this.dashboardService.notifyShowGridlines(true)
-  
+      
       document.addEventListener('mousemove', drag)
     })
 
     this.renderer.listen(this.resizeRef.nativeElement, 'mousedown', (event: MouseEvent) => {
+      // Resize
       event.preventDefault()
       this.dashboardService.notifyShowGridlines(true)
       this.showDimensions = true

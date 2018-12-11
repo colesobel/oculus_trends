@@ -2,11 +2,11 @@
 
 <h3>Dashboards</h3>
 <div class="list-group">
-  <li 
+  <a 
     *ngFor="let db of dashboards"
     class="list-group-item list-group-item-action clickable"
     routerLink="/app/dashboard/{{db.id}}/{{db.urlAlias}}">
   {{ db.name }}
   
-  </li>
+  </a>
 </div>

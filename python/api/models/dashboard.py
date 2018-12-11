@@ -20,22 +20,6 @@ class Dashboard(base_model.BaseModel):
         }
 
     @classmethod
-    def find(cls, id_):
-        sql = """
-        SELECT
-        id as id_,
-        name, 
-        account_id, 
-        uuid, 
-        active
-        FROM dashboard
-        WHERE id = %s
-        """
-
-        result = database.sql_fetch_one(sql, (id_, ))
-        return cls(**result)
-
-    @classmethod
     def create(cls, data: dict):
         sql = """
         INSERT INTO dashboard (name, account_id, uuid, created_on)

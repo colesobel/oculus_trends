@@ -25,25 +25,6 @@ class User(BaseModel):
         }
 
     @classmethod
-    def find(cls, id_):
-        sql = """
-        SELECT 
-        id as id_, 
-        account_id, 
-        role_id,
-        email, 
-        password, 
-        uuid, 
-        first_name, 
-        last_name, 
-        active
-        FROM user
-        WHERE id = %s
-        """
-        result = database.sql_fetch_one(sql, (id_, ))
-        return cls(**result)
-
-    @classmethod
     def create(cls, account_id, data):
         data = json.loads(data)
         insert = dict(
@@ -156,3 +137,8 @@ class User(BaseModel):
         with futures.ThreadPoolExecutor(max_workers=max_workers) as executor:
             users = executor.map(cls.find, user_ids)
             return [u for u in users]
+
+
+
+# usr = User.find(54)
+# print(usr)

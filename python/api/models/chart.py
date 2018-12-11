@@ -62,8 +62,6 @@ class Chart(base_model.BaseModel):
         }
 
     def run_query(self, refresh=False):
-        # TODO caching system for query results'
-
         if not refresh:  # pull from cache
             result = database.redis_get(self.id_)
             if result:
@@ -74,31 +72,6 @@ class Chart(base_model.BaseModel):
         database.redis_set(self.id_, utils.to_json(result))
 
         return result
-
-    @classmethod
-    def find(cls, id_):
-        sql = """
-        SELECT
-        id as id_, 
-        uuid, 
-        name, 
-        chart_type_id, 
-        dashboard_id, 
-        x, 
-        y, 
-        height, 
-        width, 
-        query, 
-        x_axis, 
-        y_axis,
-        options, 
-        dbc_id
-        FROM chart
-        WHERE id = %s
-        """
-
-        result = database.sql_fetch_one(sql, (id_, ))
-        return cls(**result)
 
     @classmethod
     def create(cls, account_id, data):
@@ -147,7 +120,7 @@ class Chart(base_model.BaseModel):
 
     def update(self, params):
         valid_params = {inflection.underscore(k): v for k, v in params.items()
-            if inflection.underscore(k) in self.class_parameters}
+            if inflection.underscore(k) in self.get_class_parameters()}
 
         if not valid_params:
             return
@@ -162,6 +135,4 @@ class Chart(base_model.BaseModel):
         database.sql_execute(sql, args)
 
         return
-
-
 

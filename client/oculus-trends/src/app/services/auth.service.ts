@@ -62,7 +62,13 @@ export class AuthService {
       accountName: overview['account_name'], 
       accountId: overview['account_id'], 
       roleId: overview['role_id'],
-      dashboards: overview['dashboards'], 
+      dashboards: overview['dashboards'].map(d => {
+        return {
+          id: d['id'], 
+          name: d['name'], 
+          urlAlias: d['url_alias']
+        }
+      }), 
       dbcs: overview['dbcs']
     }
   }
@@ -121,12 +127,9 @@ export class AuthService {
     return new Promise((resolve, reject) => {
       let accountId = this.accountOverview.accountId
       this.http.get(this.globalService.apiUrl + 'users', {observe: 'response'}).subscribe(response => {
-        console.log(response)
         resolve(response.body)
       }, 
       error => {
-        console.log('there was an error getting users')
-        console.log(error)
         reject(error)
       })
     })

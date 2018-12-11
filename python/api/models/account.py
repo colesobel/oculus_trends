@@ -19,20 +19,6 @@ class Account(BaseModel):
         }
 
     @classmethod
-    def find(cls, id_):
-        sql = """
-        SELECT
-        id as id_, 
-        name, 
-        uuid, 
-        active
-        FROM account
-        WHERE id = %s
-        """
-        result = database.sql_fetch_one(sql, (id_, ))
-        return cls(**result)
-
-    @classmethod
     def create(cls, data):
         data = json.loads(data)
         insert = dict(
